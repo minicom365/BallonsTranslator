@@ -9,6 +9,7 @@ urllib3==1.25.11; sys_platform == 'win32' # https://github.com/psf/requests/issu
 urllib3; sys_platform == 'darwin' # fix urllib3.package.six.move module not found error
 jaconv
 torch
+torch-directml
 torchvision
 transformers
 mecab-python3; sys_platform == 'darwin'
