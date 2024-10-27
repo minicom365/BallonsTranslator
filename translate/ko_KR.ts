@@ -257,7 +257,7 @@
     <message>
         <location filename="../ui/configpanel.py" line="441"/>
         <source>Writing-mode</source>
-        <translation>글쓰기 모드</translation>
+        <translation>텍스트 방향(세로식질)</translation>
     </message>
     <message>
         <location filename="../ui/configpanel.py" line="444"/>
