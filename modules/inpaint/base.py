@@ -8,7 +8,7 @@ from utils.registry import Registry
 from utils.textblock_mask import extract_ballon_mask
 from utils.imgproc_utils import enlarge_window
 
-from ..base import BaseModule, DEFAULT_DEVICE, soft_empty_cache, DEVICE_SELECTOR, GPUINTENSIVE_SET, TORCH_DTYPE_MAP, BF16_SUPPORTED
+from ..base import BaseModule, DEFAULT_DEVICE, soft_empty_cache, DEVICE_SELECTOR, DEVICE_SELECTOR_NO_DML, GPUINTENSIVE_SET, TORCH_DTYPE_MAP, BF16_SUPPORTED
 from ..textdetector import TextBlock
 
 INPAINTERS = Registry('inpainters')
@@ -291,8 +291,8 @@ class LamaInpainterMPE(InpainterBase):
                 2048
             ], 
             'value': 2048
-        }, 
-        'device': DEVICE_SELECTOR()
+        },
+        'device': DEVICE_SELECTOR_NO_DML()
     }
 
     download_file_list = [{
@@ -414,8 +414,8 @@ class LamaLarge(LamaInpainterMPE):
                 2048
             ], 
             'value': 1536,
-        }, 
-        'device': DEVICE_SELECTOR(),
+        },
+        'device': DEVICE_SELECTOR_NO_DML(),
         'precision': {
             'type': 'selector',
             'options': [

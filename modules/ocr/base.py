@@ -8,7 +8,7 @@ from utils.registry import Registry
 OCR = Registry('OCR')
 register_OCR = OCR.register_module
 
-from ..base import BaseModule, DEFAULT_DEVICE, DEVICE_SELECTOR, LOGGER
+from ..base import BaseModule, DEFAULT_DEVICE, DEVICE_SELECTOR, DEVICE_SELECTOR_NO_DML, LOGGER
 
 class OCRBase(BaseModule):
 

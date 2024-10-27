@@ -9,7 +9,7 @@ from utils.logger import logger as LOGGER
 from utils import shared
 
 
-GPUINTENSIVE_SET = {'cuda', 'mps'}
+GPUINTENSIVE_SET = {'mps', 'privateuseone'}
 
 def register_hooks(hooks_registered: OrderedDict, callbacks: Union[List, Callable, Dict]):
     if callbacks is None:
@@ -189,13 +189,26 @@ def soft_empty_cache():
     elif DEFAULT_DEVICE == 'mps':
         torch.mps.empty_cache()
 
-DEVICE_SELECTOR = lambda : deepcopy(
+
+def DEVICE_SELECTOR(): return deepcopy(
     {
         'type': 'selector',
         'options': [
             'cpu',
-            'cuda',
-            'mps'
+            'mps',
+            'privateuseone'
+        ],
+        'value': DEFAULT_DEVICE
+    }
+)
+
+
+def DEVICE_SELECTOR_NO_DML(): return deepcopy(
+    {
+        'type': 'selector',
+        'options': [
+            'cpu',
+            'mps',
         ],
         'value': DEFAULT_DEVICE
     }

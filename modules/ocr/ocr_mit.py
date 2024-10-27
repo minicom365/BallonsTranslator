@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 from copy import deepcopy
 
-from .base import DEVICE_SELECTOR, OCRBase, register_OCR, TextBlock
+from .base import DEVICE_SELECTOR, DEVICE_SELECTOR_NO_DML, OCRBase, register_OCR, TextBlock
 from utils.textblock import collect_textblock_regions
 
 mit_params = {
@@ -14,6 +14,10 @@ mit_params = {
     'device': DEVICE_SELECTOR(),
     'description': 'OCRMIT32px'
 }
+
+mit_params_no_dml = deepcopy(mit_params)
+mit_params_no_dml['device'] = DEVICE_SELECTOR_NO_DML()
+
 
 class MITModels(OCRBase):
 
@@ -60,7 +64,7 @@ from .mit48px_ctc import OCR48pxCTC
 @register_OCR('mit48px_ctc')
 class OCRMIT48pxCTC(MITModels):
 
-    params = deepcopy(mit_params)
+    params = deepcopy(mit_params_no_dml)
     download_file_list = [{
         'url': 'https://github.com/zyddnys/manga-image-translator/releases/download/beta-0.3/ocr-ctc.zip',
         'files': ['ocr-ctc.ckpt', 'alphabet-all-v5.txt'],
