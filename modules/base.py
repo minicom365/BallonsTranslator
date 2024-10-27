@@ -159,10 +159,18 @@ class BaseModule:
 
 os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import torch
+import torch_directml
 
 DEFAULT_DEVICE = 'cpu'
-if hasattr(torch, 'cuda') and torch.cuda.is_available():
-    DEFAULT_DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+# if hasattr(torch, 'cuda') and torch.cuda.is_available():
+#     DEFAULT_DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+if hasattr(torch, 'privateuseone') and torch_directml.device_count() > 0:
+    from modules.dml import directml_init, directml_do_hijack
+    directml_init()
+    directml_do_hijack()
+    for d in range(torch.cuda.device_count()):
+        print(f"device {d}: {torch.cuda.get_device_name(d)}")
+    DEFAULT_DEVICE = 'privateuseone'
 elif hasattr(torch, 'backends') and hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
     DEFAULT_DEVICE = 'mps'
 BF16_SUPPORTED = DEFAULT_DEVICE == 'cuda' and torch.cuda.is_bf16_supported()
@@ -175,7 +183,7 @@ def is_nvidia():
 
 def soft_empty_cache():
     gc.collect()
-    if DEFAULT_DEVICE == 'cuda':
+    if DEFAULT_DEVICE in ('cuda', 'privateuseone'):
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
     elif DEFAULT_DEVICE == 'mps':
