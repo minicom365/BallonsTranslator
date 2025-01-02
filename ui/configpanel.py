@@ -340,6 +340,7 @@ class ConfigPanel(Widget):
     save_config = Signal()
     unload_models = Signal()
     reload_textstyle = Signal(bool)
+    show_only_custom_font = Signal(bool)
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -446,6 +447,10 @@ class ConfigPanel(Widget):
         global_fntfmt_layout.addWidget(sublock, 3, 1)
 
         global_fntfmt_layout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding), 0, 2)
+        
+        self.let_show_only_custom_fonts, sublock = checkbox_with_label(self.tr("Font selection"), discription=self.tr("Show only custom fonts"))
+        global_fntfmt_layout.addWidget(sublock, 4, 0)
+        self.let_show_only_custom_fonts.stateChanged.connect(self.on_show_only_custom_fonts)
 
         self.let_autolayout_checker, sublock = generalConfigPanel.addCheckBox(self.tr('Auto layout'), 
                 discription=self.tr('Split translation into multi-lines according to the extracted balloon region.'))
@@ -577,6 +582,10 @@ class ConfigPanel(Widget):
     def on_effect_flag_changed(self):
         pcfg.let_fnteffect_flag = self.let_effect_combox.currentIndex()
 
+    def on_show_only_custom_fonts(self):
+        pcfg.let_show_only_custom_fonts_flag = self.let_show_only_custom_fonts.isChecked()
+        self.show_only_custom_font.emit(pcfg.let_show_only_custom_fonts_flag)
+
     def focusOnTranslator(self):
         idx0, idx1 = self.trans_sub_block.idx0, self.trans_sub_block.idx1
         self.configTable.setCurrentItem(idx0, idx1)
@@ -616,5 +625,6 @@ class ConfigPanel(Widget):
         self.rst_imgquality_edit.setText(str(pcfg.imgsave_quality))
         self.load_model_checker.setChecked(pcfg.module.load_model_on_demand)
         self.empty_runcache_checker.setChecked(pcfg.module.empty_runcache)
+        self.let_show_only_custom_fonts.setChecked(pcfg.let_show_only_custom_fonts_flag)
 
         self.blockSignals(False)
