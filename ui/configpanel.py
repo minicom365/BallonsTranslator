@@ -447,10 +447,6 @@ class ConfigPanel(Widget):
         global_fntfmt_layout.addWidget(sublock, 3, 1)
 
         global_fntfmt_layout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding), 0, 2)
-        
-        self.let_show_only_custom_fonts, sublock = checkbox_with_label(self.tr("Font selection"), discription=self.tr("Show only custom fonts"))
-        global_fntfmt_layout.addWidget(sublock, 4, 0)
-        self.let_show_only_custom_fonts.stateChanged.connect(self.on_show_only_custom_fonts)
 
         self.let_autolayout_checker, sublock = generalConfigPanel.addCheckBox(self.tr('Auto layout'), 
                 discription=self.tr('Split translation into multi-lines according to the extracted balloon region.'))
@@ -461,6 +457,9 @@ class ConfigPanel(Widget):
 
         self.let_textstyle_indep_checker, _ = generalConfigPanel.addCheckBox(self.tr('Independent text styles for each projects'))
         self.let_textstyle_indep_checker.stateChanged.connect(self.on_textstyle_indep_changed)
+
+        self.let_show_only_custom_fonts, sublock = generalConfigPanel.addCheckBox(self.tr("Show only custom fonts"))
+        self.let_show_only_custom_fonts.stateChanged.connect(self.on_show_only_custom_fonts)
 
         generalConfigPanel.addTextLabel(label_save)
         self.rst_imgformat_combobox, imsave_sublock = generalConfigPanel.addCombobox(['PNG', 'JPG', 'WEBP'], self.tr('Result image format'))
