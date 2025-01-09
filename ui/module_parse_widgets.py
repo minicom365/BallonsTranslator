@@ -3,7 +3,7 @@ from typing import List, Callable
 from modules import GET_VALID_INPAINTERS, GET_VALID_TEXTDETECTORS, GET_VALID_TRANSLATORS, GET_VALID_OCR, \
     BaseTranslator, DEFAULT_DEVICE, GPUINTENSIVE_SET
 from utils.logger import logger as LOGGER
-from .custom_widget import ConfigComboBox, ParamComboBox, NoBorderPushBtn
+from .custom_widget import ConfigComboBox, ParamComboBox, NoBorderPushBtn, ParamNameLabel
 from utils.shared import CONFIG_FONTSIZE_CONTENT, CONFIG_COMBOBOX_MIDEAN, CONFIG_COMBOBOX_LONG, CONFIG_COMBOBOX_SHORT, CONFIG_COMBOBOX_HEIGHT
 from utils.config import pcfg
 
@@ -11,21 +11,6 @@ from qtpy.QtWidgets import QPlainTextEdit, QHBoxLayout, QVBoxLayout, QWidget, QL
 from qtpy.QtCore import Qt, Signal
 from qtpy.QtGui import QDoubleValidator
 
-
-class ParamNameLabel(QLabel):
-    def __init__(self, param_name: str, alignment = None, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
-        if alignment is None:
-            self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        else:
-            self.setAlignment(alignment)
-
-        font = self.font()
-        font.setPointSizeF(CONFIG_FONTSIZE_CONTENT-2)
-        self.setFont(font)
-        self.setText(param_name)
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
 
 class ParamLineEditor(QLineEdit):
     
@@ -328,6 +313,7 @@ class ModuleConfigParseWidget(QWidget):
 class TranslatorConfigPanel(ModuleConfigParseWidget):
 
     show_MT_keyword_window = Signal()
+    show_OCR_keyword_window = Signal()
 
     def __init__(self, module_name, scrollWidget: QWidget = None, *args, **kwargs) -> None:
         super().__init__(module_name, GET_VALID_TRANSLATORS, scrollWidget=scrollWidget, *args, **kwargs)
@@ -338,6 +324,9 @@ class TranslatorConfigPanel(ModuleConfigParseWidget):
         self.replaceMTkeywordBtn = NoBorderPushBtn(self.tr("Keyword substitution for machine translation"), self)
         self.replaceMTkeywordBtn.clicked.connect(self.show_MT_keyword_window)
         self.replaceMTkeywordBtn.setFixedWidth(500)
+        self.replaceOCRkeywordBtn = NoBorderPushBtn(self.tr("Keyword substitution for source text"), self)
+        self.replaceOCRkeywordBtn.clicked.connect(self.show_OCR_keyword_window)
+        self.replaceOCRkeywordBtn.setFixedWidth(500)
 
         st_layout = QHBoxLayout()
         st_layout.setSpacing(15)
@@ -348,6 +337,7 @@ class TranslatorConfigPanel(ModuleConfigParseWidget):
         st_layout.addWidget(self.target_combobox)
         
         self.vlayout.insertLayout(1, st_layout) 
+        self.vlayout.addWidget(self.replaceOCRkeywordBtn)
         self.vlayout.addWidget(self.replaceMTkeywordBtn)
 
     def finishSetTranslator(self, translator: BaseTranslator):
@@ -393,22 +383,12 @@ class TextDetectConfigPanel(ModuleConfigParseWidget):
 
 
 class OCRConfigPanel(ModuleConfigParseWidget):
-    
-    show_OCR_keyword_window = Signal()
-
     def __init__(self, module_name: str, scrollWidget: QWidget = None, *args, **kwargs) -> None:
         super().__init__(module_name, GET_VALID_OCR, scrollWidget = scrollWidget, *args, **kwargs)
         self.ocr_changed = self.module_changed
         self.setOCR = self.setModule
-
-        self.replaceOCRkeywordBtn = NoBorderPushBtn(self.tr("Keyword substitution for OCR results"), self)
-        self.replaceOCRkeywordBtn.clicked.connect(self.show_OCR_keyword_window)
-        self.replaceOCRkeywordBtn.setFixedWidth(500)
-
         self.restoreEmptyOCRChecker = QCheckBox(self.tr("Delete and restore region where OCR return empty string."), self)
         self.restoreEmptyOCRChecker.clicked.connect(self.on_restore_empty_ocr)
-
-        self.vlayout.addWidget(self.replaceOCRkeywordBtn)
         self.vlayout.addWidget(self.restoreEmptyOCRChecker)
 
     def on_restore_empty_ocr(self):
