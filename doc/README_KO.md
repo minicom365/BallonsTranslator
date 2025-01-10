@@ -183,7 +183,7 @@ sh scripts/build-macos-app.sh
 * ```Ctrl++```/```Ctrl+-``` (또는 ```Ctrl+Shift+=```) 로 이미지 크기를 조절합니다
 * ```Ctrl+G```/```Ctrl+F``` 로 모든페이지 혹은 현재페이지 내에서 검색합니다.
 * ```0-9``` 로 텍스트 레이어의 불투명도를 조정합니다.
-* For text editing: bold - ```Ctrl+B```, underline - ```Ctrl+U```, Italics - ```Ctrl+I``` 
+* 텍스트 스타일: 두껍게 - ```Ctrl+B```, 밑줄 - ```Ctrl+U```, 이탤릭 - ```Ctrl+I``` 
 * 텍스트 스타일 패널 -> 효과에서 텍스트 그림자 및 투명도를 설정합니다.  
 * ```Alt+Arrow Keys``` 및 ```Alt+WASD``` (또는 텍스트 편집 모드에서 ```pageDown``` 및 ```pageUp```) 로 텍스트 블록 사이를 전환합니다.
   
