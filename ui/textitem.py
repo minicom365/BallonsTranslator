@@ -72,13 +72,13 @@ class TextBlkItem(QGraphicsTextItem):
         self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
 
     def inputMethodEvent(self, e: QInputMethodEvent):
+        if self.pre_editing == False:
+            cursor = self.textCursor()
+            self.input_method_from = cursor.selectionStart()
         if e.preeditString() == '':
             self.pre_editing = False
             self.input_method_text = e.commitString()
         else:
-            if self.pre_editing == False:
-                cursor = self.textCursor()
-                self.input_method_from = cursor.selectionStart()
             self.pre_editing = True
         super().inputMethodEvent(e)
         
@@ -394,7 +394,7 @@ class TextBlkItem(QGraphicsTextItem):
         if not self.pre_editing:
             if self.hasFocus():
                 self.change_from = from_
-                self.change_added = added
+                self.change_added = added - removed
 
     def keyPressEvent(self, e: QKeyEvent) -> None:
 
