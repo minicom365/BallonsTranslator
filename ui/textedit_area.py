@@ -156,8 +156,8 @@ class SourceTextEdit(QTextEdit):
             self.text_content_changed = True
             if self.hasFocus():
                 self.change_from = from_
-                self.change_added = added
-    
+                self.change_added = added - removed
+
     def adjustSize(self):
         h = self.document().documentLayout().documentSize().toSize().height()
         self.setFixedHeight(max(h, self.min_height))
@@ -251,13 +251,13 @@ class SourceTextEdit(QTextEdit):
         return super().focusOutEvent(event)
 
     def inputMethodEvent(self, e: QInputMethodEvent) -> None:
+        if self.pre_editing is False:
+            cursor = self.textCursor()
+            self.input_method_from = cursor.selectionStart()
         if e.preeditString() == '':
             self.pre_editing = False
             self.input_method_text = e.commitString()
         else:
-            if self.pre_editing is False:
-                cursor = self.textCursor()
-                self.input_method_from = cursor.selectionStart()
             self.pre_editing = True
         super().inputMethodEvent(e)
 
