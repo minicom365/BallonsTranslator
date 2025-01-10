@@ -257,8 +257,6 @@ Then stop, without any other explanations or notes.
             'messages': messages,
             'temperature': self.temperature,
             'top_p': self.top_p,
-            'frequency_penalty': self.params['frequency penalty'],
-            'presence_penalty ': self.params['presence penalty']
         }
         max_tokens = self.max_tokens // 2 # Assuming that half of the tokens are used for the query
         func_parameters = inspect.signature(openai.chat.completions.create).parameters
@@ -266,6 +264,9 @@ Then stop, without any other explanations or notes.
             func_args['max_completion_tokens'] = max_tokens
         else:
             func_args['max_tokens'] = max_tokens
+        if 'presence_penalty' in func_parameters:
+            func_args['presence_penalty'] = self.params['presence penalty']
+            func_args['frequency_penalty'] = self.params['frequency penalty']
 
         if OPENAPI_V1_API:
             openai_chatcompletions_create = openai.chat.completions.create
