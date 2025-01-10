@@ -2,11 +2,11 @@
 > **번역 결과를 공개적으로 공유하고 경험이 풍부한 인간 번역가가가 번역 또는 교정에 참여하지 않은 경우, 기계 번역으로 명확하게 표시하십시오.**
 
 # BallonTranslator
-[简体中文](/README.md) | [English](/README_EN.md) | [pt-BR](doc/README_PT-BR.md) | [Русский](doc/README_RU.md) | [日本語](doc/README_JA.md) | [Indonesia](doc/README_ID.md) | [Tiếng Việt](doc/README_VI.md) | 한국어
+[简体中文](/README.md) | [English](/README_EN.md) | [pt-BR](../doc/README_PT-BR.md) | [Русский](../doc/README_RU.md) | [日本語](../doc/README_JA.md) | [Indonesia](../doc/README_ID.md) | [Tiếng Việt](../doc/README_VI.md) | 한국어
 
 딥러닝으로 구동되는 또 다른 컴퓨터 지원 만화/만화 번역 툴.
 
-<img src="doc/src/ui0.jpg" div align=center>
+<img src="./src/ui0.jpg" div align=center>
 
 <p align=center>
 미리보기
@@ -131,7 +131,7 @@ sh scripts/build-macos-app.sh
 # 사용법
 
 **충돌시 관련 정보를 남기기 위해 터미널 에서 프로그램을 실행하는 것이 좋습니다. 다음 GIF를 참조하십시오.**
-<img src="doc/src/run.gif">  
+<img src="./src/run.gif">  
 - 프로그램을 처음 실행하는 경우, 설정 아이콘을 클릭하여 번역기를 선택하고 소스 및 대상 언어를 설정하십시오.
 - 폴더 아이콘을 클릭하여 번역이 필요한 만화(코믹,망가 등)의 이미지를 포함하는 폴더를 엽니다.
 - '실행`버튼을 클릭하고 프로세스를 완료합니다.
@@ -141,13 +141,13 @@ sh scripts/build-macos-app.sh
 ## 이미지 편집
 
 ### 인페인트 도구
-<img src="doc/src/imgedit_inpaint.gif">
+<img src="./src/imgedit_inpaint.gif">
 <p align = "center">
 이미지 편집 모드, 인페인팅 도구
 </p>
 
 ### 글상자 도구
-<img src="doc/src/rect_tool.gif">
+<img src="./src/rect_tool.gif">
 <p align = "center">
 글상자 도구
 </p>
@@ -156,17 +156,17 @@ sh scripts/build-macos-app.sh
 결과는 알고리즘('방법 1' 및 '방법 2'의 GIF)이 텍스트 마스크를 얼마나 정확하게 추출하는지에 따라 달라집니다. 복잡한 텍스트 및 배경에서는 성능이 저하될 수 있습니다.  
 
 ## 텍스트 편집
-<img src="doc/src/textedit.gif">
+<img src="./src/textedit.gif">
 <p align = "center">
 텍스트 편집 모드
 </p>
 
-<img src="doc/src/multisel_autolayout.gif" div align=center>
+<img src="./src/multisel_autolayout.gif" div align=center>
 <p align=center>
 일괄 텍스트 포맷팅 및 자동 레이아웃
 </p>
 
-<img src="doc/src/ocrselected.gif" div align=center>
+<img src="./src/ocrselected.gif" div align=center>
 <p align=center>
 선택 영역 OCR 및 번역
 </p>
@@ -187,7 +187,7 @@ sh scripts/build-macos-app.sh
 * 텍스트 스타일 패널 -> 효과에서 텍스트 그림자 및 투명도를 설정합니다.  
 * ```Alt+Arrow Keys``` 및 ```Alt+WASD``` (또는 텍스트 편집 모드에서 ```pageDown``` 및 ```pageUp```) 로 텍스트 블록 사이를 전환합니다.
   
-<img src="doc/src/configpanel.png">
+<img src="./src/configpanel.png">
 
 ## 헤드리스 모드 (GUI 없이 실행)
 ``` python
@@ -209,14 +209,14 @@ python launch.py --headless --exec_dirs "[DIR_1],[DIR_2]..."
  * 영어 및 일본어의 텍스트 감지를 지원하며, 훈련 코드 및 자세한 내용은 [comic-text-detector](https://github.com/dmMaze/comic-text-detector)에서 확인할 수 있습니다.
 * [Starriver Cloud (Tuanzi Manga OCR)](https://cloud.stariver.org.cn/)의 텍스트 감지를 지원합니다. 사용자 이름과 비밀번호는 입력해야 하며, 매 프로그램 실행 시 자동으로 로그인 됩니다.
 
-   * 자세한 지침에 대해서는 **Tuanzi OCR 지침**: ([Chinese](doc/团子OCR说明.md) & [Brazilian Portuguese](doc/Manual_TuanziOCR_pt-BR.md) 만)
+   * 자세한 지침에 대해서는 **Tuanzi OCR 지침**: ([Chinese](./团子OCR说明.md) & [Brazilian Portuguese](./Manual_TuanziOCR_pt-BR.md) 만)
 ## OCR
  * 모든 mit* 모델은 manga-image-translator 에 기반하며, 영어, 일본어 및 한국어의 인식 및 텍스트 색상 추출을 지원합니다.
  * [kha-white](https://github.com/kha-white) 의 [manga_ocr](https://github.com/kha-white/manga-ocr) 는 , 일본어의 텍스트 인식을 수행하며, 일본어 만화의 초점을 맞췄습니다.
  * [Starriver Cloud (Tuanzi Manga OCR)](https://cloud.stariver.org.cn/) 를 사용한 텍스트 감지를 지원합니다. 사용자 이름과 비밀번호는 입력해야 하며, 매 프로그램 실행 시 자동으로 로그인 됩니다.
    * 현재 구현은 각 텍스트 블록에 OCR을 개별적으로 사용하며, 속도가 느리고 정확도가 크게 향상되지 않습니다. 추천되지 않습니다. 필요한 경우, 대신 Tuanzi Detector를 사용하십시오.
    * 텍스트 감지에 대한 Tuanzi 검출기를 사용하는 경우, OCR을 none_ocr로 설정하여 텍스트, 저장 시간을 직접 읽고 요청의 수를 줄이는 것이 좋습니다.
-   * 자세한 지침에 대해서는 **Tuanzi OCR 지침**: ([Chinese](doc/团子OCR说明.md) & [Brazilian Portuguese](doc/Manual_TuanziOCR_pt-BR.md) 만)
+   * 자세한 지침에 대해서는 **Tuanzi OCR 지침**: ([Chinese](./团子OCR说明.md) & [Brazilian Portuguese](./Manual_TuanziOCR_pt-BR.md) 만)
 * “선택적” PaddleOCR 모듈이 추가되었습니다. 디버그 모드에서는 이 모듈이 없다는 메시지가 표시됩니다. 여기에 설명된 지침에 따라 간단히 설치할 수 있습니다. 패키지를 직접 설치하지 않으려면 paddlepaddle(gpu) 및 paddleocr 줄의 주석(`#` 제거)을 해제하면 됩니다. 자신의 위험과 위험을 감수하고 모든 것을 베팅하세요. 저(브로핀)와 두 명의 테스터에게는 모든 것이 정상적으로 설치되었으므로 오류가 있을 수 있습니다. 이슈에 글을 작성하고 저를 태그하세요.
 
 ## 소개
@@ -239,12 +239,12 @@ python launch.py --headless --exec_dirs "[DIR_1],[DIR_2]..."
     * 'exp' suffix 버전은 더 많은 토큰을 사용하지만 안정성이 더 뛰어나고 프롬프트에 '탈옥'이 포함되어 있어 긴 텍스트 번역에 적합합니다.
 
 다른 좋은 오프라인 영어 번역기를 추가하려면, 다음을 참조하시기 바랍니다 [스레드](https://github.com/dmMaze/BallonsTranslator/discussions/515).
-새로운 번역기를 추가하려면 [how_to_add_new_translator](doc/how_to_add_new_translator.md)를 참조하시기 바랍니다. BaseClass의 하위 클래스로 두 개의 인터페이스를 구현하는 것처럼 간단합니다. 그런 다음 애플리케이션에서 이를 사용할 수 있으며, 프로젝트에 기여할 수 있습니다.
+새로운 번역기를 추가하려면 [how_to_add_new_translator](./how_to_add_new_translator.md)를 참조하시기 바랍니다. BaseClass의 하위 클래스로 두 개의 인터페이스를 구현하는 것처럼 간단합니다. 그런 다음 애플리케이션에서 이를 사용할 수 있으며, 프로젝트에 기여할 수 있습니다.
 
 
 ## FAQ 및 기타
 * 만약 Nvidia GPU 또는 Apple silicon을 가지고 있다면, 프로그램은 하드웨어 가속을 가능하게합니다.
-* 텍스트 선택의 미니 메뉴에서 [saladict](https://saladict.crimx.com)(*All-in-one 전문적인 팝업사전과 페이지 번역기*)에 대한 지원 추가. [설치 안내](doc/saladict.md) 
+* 텍스트 선택의 미니 메뉴에서 [saladict](https://saladict.crimx.com)(*All-in-one 전문적인 팝업사전과 페이지 번역기*)에 대한 지원 추가. [설치 안내](./saladict.md) 
 * 대부분의 모듈이 [PyTorch](https://pytorch.org/get-started/locally/) 을 사용하므로 [NVIDIA's CUDA](https://pytorch.org/docs/stable/notes/cuda.html) 또는 [AMD's ROCm](https://pytorch.org/docs/stable/notes/hip.html) 장치가 있는 경우 성능을 가속화하세요.
 * 폰트는 시스템에 설치된 폰트입니다.
 * 러시아 현지화를 진행한 [브로핀](https://github.com/bropines) 에 감사드립니다.
