@@ -1,14 +1,13 @@
-from pathlib import Path
-import sys
 from .base import *
 
+import os
 from typing import Literal
 from msl.loadlib import Client64
 
 
 class MyClient(Client64):
     def __init__(self, engine_path, engine_type: Literal['J2K', 'K2J'], dat_path):
-        super(MyClient, self).__init__(module32=str(Path(__file__).parent) + '\module_eztrans32.py',
+        super(MyClient, self).__init__(module32=str(os.path.dirname(os.path.realpath(__file__))) + '\module_eztrans32.py',
                                        engine_path=engine_path,
                                        engine_type=engine_type,
                                        dat_path=dat_path)
@@ -32,7 +31,7 @@ class ezTransTranslator(BaseTranslator):
         self.lang_map['한국어'] = 'k'
 
         self.j2k_engine = MyClient(self.params['path_j2k'], "J2K", self.params['path_dat'])
-        if self.params['path_k2j(Optional)']:
+        if os.path.exists(self.params['path_k2j(Optional)']):
             self.k2j_engine = MyClient(self.params['path_k2j(Optional)'], "K2J", self.params['path_dat'])
 
     def _translate(self, src_list: List[str]) -> List[str]:
@@ -50,8 +49,8 @@ class ezTransTranslator(BaseTranslator):
 
     @property
     def supported_tgt_list(self) -> List[str]:
-        return ['한국어', '日本語'] if self.params['path_k2j(Optional)'] else ['한국어']
+        return ['한국어', '日本語'] if hasattr(self,"k2j_engine") else ['한국어']
 
     @property
     def supported_src_list(self) -> List[str]:
-        return ['한국어', '日本語'] if self.params['path_k2j(Optional)'] else ['日本語']
+        return ['한국어', '日本語'] if hasattr(self,"k2j_engine") else ['日本語']
