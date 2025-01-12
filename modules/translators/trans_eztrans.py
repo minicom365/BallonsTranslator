@@ -45,7 +45,7 @@ class ezTransTranslator(BaseTranslator):
             return src_list
 
     def updateParam(self, param_key: str, param_content):
-        pass
+        super().updateParam(param_key, param_content)
 
     @property
     def supported_tgt_list(self) -> List[str]:
