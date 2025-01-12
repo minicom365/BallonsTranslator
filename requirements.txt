@@ -54,3 +54,4 @@ pyobjc-framework-cocoa; sys_platform == 'darwin'
 pyobjc-framework-coreml; sys_platform == 'darwin'
 pyobjc-framework-quartz; sys_platform == 'darwin'
 pyobjc-framework-vision; sys_platform == 'darwin'
+msl-loadlib

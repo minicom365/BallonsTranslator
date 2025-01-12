@@ -762,7 +762,7 @@
     <message>
         <location filename="../ui/mainwindow.py" line="206"/>
         <source>Keyword substitution for machine translation</source>
-        <translation>기계 번역 키워드 치환</translation>
+        <translation>번역문에 대한 키워드 치환(후처리)</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.py" line="391"/>
@@ -841,7 +841,7 @@
     <message>
         <location filename="../ui/mainwindow.py" line="202"/>
         <source>Keyword substitution for source text</source>
-        <translation>소스 텍스트에 대한 키워드 치환</translation>
+        <translation>원문에 대한 키워드 치환(전처리)</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.py" line="1096"/>
@@ -1282,7 +1282,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/mainwindowbars.py" line="340"/>
         <source>Keyword substitution for machine translation</source>
-        <translation>기계 번역 키워드 치환</translation>
+        <translation>번역문에 대한 키워드 치환(후처리)</translation>
     </message>
     <message>
         <location filename="../ui/mainwindowbars.py" line="338"/>
@@ -1382,7 +1382,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/mainwindowbars.py" line="342"/>
         <source>Keyword substitution for source text</source>
-        <translation>소스 텍스트에 대한 키워드 치환</translation>
+        <translation>원문에 대한 키워드 치환(전처리)</translation>
     </message>
 </context>
 <context>
@@ -1408,7 +1408,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/module_parse_widgets.py" line="324"/>
         <source>Keyword substitution for machine translation</source>
-        <translation>기계 번역 키워드 치환</translation>
+        <translation>번역문에 대한 키워드 치환(후처리)</translation>
     </message>
     <message>
         <location filename="../ui/module_parse_widgets.py" line="334"/>
@@ -1423,7 +1423,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/module_parse_widgets.py" line="327"/>
         <source>Keyword substitution for source text</source>
-        <translation>소스 텍스트에 대한 키워드 치환</translation>
+        <translation>원문에 대한 키워드 치환(전처리)</translation>
     </message>
 </context>
 <context>
