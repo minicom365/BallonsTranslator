@@ -12,7 +12,7 @@ class MyClient(Client64):
                                        engine_type=engine_type,
                                        dat_path=dat_path)
 
-    def translate(self, src_text: str | list):
+    def translate(self, src_text: str | list) -> list:
         return self.request32('translate', src_text)
 
 
@@ -31,8 +31,8 @@ class ezTransTranslator(BaseTranslator):
     mapping[0x3000] = 0x0020  # 전각 공백 → 반각 공백
 
     # 변환 함수
-    def fullwidth_to_halfwidth(self, text:str) -> str:
-        return text.translate(self.mapping)
+    def fullwidth_to_halfwidth(self, text_list:list[str]) -> list[str]:
+        return [text.translate(self.mapping) for text in text_list]
     
     def _setup_translator(self):
         self.lang_map['日本語'] = 'j'
