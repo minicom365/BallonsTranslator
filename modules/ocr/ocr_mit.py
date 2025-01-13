@@ -11,13 +11,9 @@ mit_params = {
         'options': [8, 16, 24, 32],
         'value': 16
     },
-    'device': DEVICE_SELECTOR(),
+    'device': DEVICE_SELECTOR_NO_DML(),
     'description': 'OCRMIT32px'
 }
-
-mit_params_no_dml = deepcopy(mit_params)
-mit_params_no_dml['device'] = DEVICE_SELECTOR_NO_DML()
-
 
 class MITModels(OCRBase):
 
@@ -68,7 +64,7 @@ from .mit48px_ctc import OCR48pxCTC
 @register_OCR('mit48px_ctc')
 class OCRMIT48pxCTC(MITModels):
 
-    params = deepcopy(mit_params_no_dml)
+    params = deepcopy(mit_params)
     download_file_list = [{
         'url': 'https://github.com/zyddnys/manga-image-translator/releases/download/beta-0.3/ocr-ctc.zip',
         'files': ['ocr-ctc.ckpt', 'alphabet-all-v5.txt'],
