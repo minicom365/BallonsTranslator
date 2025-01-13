@@ -841,7 +841,7 @@
     <message>
         <location filename="../ui/mainwindow.py" line="202"/>
         <source>Keyword substitution for source text</source>
-        <translation>원문에 대한 키워드 치환(전처리)</translation>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
     </message>
     <message>
         <location filename="../ui/mainwindow.py" line="1096"/>
@@ -1382,7 +1382,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/mainwindowbars.py" line="342"/>
         <source>Keyword substitution for source text</source>
-        <translation>원문에 대한 키워드 치환(전처리)</translation>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
     </message>
 </context>
 <context>
@@ -1423,7 +1423,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/module_parse_widgets.py" line="327"/>
         <source>Keyword substitution for source text</source>
-        <translation>원문에 대한 키워드 치환(전처리)</translation>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
     </message>
 </context>
 <context>
