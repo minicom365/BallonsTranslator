@@ -591,7 +591,7 @@ class SceneTextManager(QObject):
 
     def onTextBlkItemEndEdit(self, blk_id: int):
         self.canvas.editing_textblkitem = None
-        self.formatpanel.set_textblk_item(None)
+        self.textblk_item_list[blk_id].setSelected(True)
         self.txtblkShapeControl.endEditing()
 
     def editingTextItem(self) -> TextBlkItem:
@@ -681,6 +681,10 @@ class SceneTextManager(QObject):
         if len(blkitem_list) > 0:
             self.canvas.clearSelection()
             self.canvas.push_undo_command(PasteBlkItemsCommand(blkitem_list, pair_widget_list, self))
+            if len(blkitem_list) == 1:
+                self.formatpanel.set_textblk_item(blkitem_list[0])
+            else:
+                self.formatpanel.set_textblk_item(multi_select=True)
 
     def onFormatTextblks(self, fmt: FontFormat = None):
         if fmt is None:
@@ -714,6 +718,10 @@ class SceneTextManager(QObject):
         if self.canvas.textEditMode():
             textitems = self.canvas.selected_text_items()
             self.textEditList.set_selected_list([t.idx for t in textitems])
+            if len(textitems) == 1:
+                self.formatpanel.set_textblk_item(textitems[-1])
+            else:
+                self.formatpanel.set_textblk_item(multi_select=bool(textitems))
 
     def layout_textblk(self, blkitem: TextBlkItem, text: str = None, mask: np.ndarray = None, bounding_rect: List = None, region_rect: List = None):
         

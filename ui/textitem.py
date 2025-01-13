@@ -801,6 +801,22 @@ class TextBlkItem(QGraphicsTextItem):
         if repaint_background:
             self.update()
 
+    def setRelFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
+        cursor = self.textCursor()
+        old_sizes = []
+        for i in range(len(self.toPlainText())):
+            cursor.setPosition(i)
+            cursor.setPosition(i+1, QTextCursor.MoveMode.KeepAnchor)
+            old_sizes.append(cursor.charFormat().fontPointSize())
+        for i in range(len(self.toPlainText())):
+            cursor.setPosition(i)
+            cursor.setPosition(i+1, QTextCursor.MoveMode.KeepAnchor)
+            self.setTextCursor(cursor)
+            newvalue = round(old_sizes[i] * value,2)
+            self.setFontSize(newvalue, repaint_background, True, restore_cursor, clip_size, **kwargs)
+            cursor.clearSelection()
+            self.squeezeBoundingRect()
+
     def setFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
         '''
         value should be point size
