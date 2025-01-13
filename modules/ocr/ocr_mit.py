@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 from copy import deepcopy
 
-from .base import DEVICE_SELECTOR, DEVICE_SELECTOR_NO_DML, OCRBase, register_OCR, TextBlock
+from .base import DEVICE_SELECTOR, OCRBase, register_OCR, TextBlock
 from utils.textblock import collect_textblock_regions
 
 mit_params = {
@@ -11,7 +11,7 @@ mit_params = {
         'options': [8, 16, 24, 32],
         'value': 16
     },
-    'device': DEVICE_SELECTOR_NO_DML(),
+    'device': DEVICE_SELECTOR(not_supported=['privateuseone']),
     'description': 'OCRMIT32px'
 }
 

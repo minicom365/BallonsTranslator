@@ -202,20 +202,11 @@ def soft_empty_cache():
         torch.mps.empty_cache()
 
 
-def DEVICE_SELECTOR(): return deepcopy(
+def DEVICE_SELECTOR(not_supported:list[str]=[]): return deepcopy(
     {
         'type': 'selector',
-        'options': AVAILABLE_DEVICES,
-        'value': DEFAULT_DEVICE
-    }
-)
-
-
-def DEVICE_SELECTOR_NO_DML(): return deepcopy(
-    {
-        'type': 'selector',
-        'options': [opt for opt in AVAILABLE_DEVICES if not 'privateuseone' in opt],
-        'value': DEFAULT_DEVICE if DEFAULT_DEVICE != "privateuseone" else "cpu"
+        'options': [opt for opt in AVAILABLE_DEVICES if all(device not in opt for device in not_supported)],
+        'value': DEFAULT_DEVICE if not any(DEFAULT_DEVICE in device for device in not_supported) else 'cpu'
     }
 )
 

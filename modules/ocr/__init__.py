@@ -1,1 +1,1 @@
-from .base import OCRBase, register_OCR, DEVICE_SELECTOR, DEVICE_SELECTOR_NO_DML, DEFAULT_DEVICE, TextBlock, OCR
+from .base import OCRBase, register_OCR, DEVICE_SELECTOR, DEFAULT_DEVICE, TextBlock, OCR
