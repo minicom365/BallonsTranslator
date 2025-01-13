@@ -125,6 +125,7 @@ class TextBlkItem(QGraphicsTextItem):
 
     def paint_stroke(self, painter: QPainter):
         doc = QTextDocument()
+        doc.setUndoRedoEnabled(False)
         doc.setDocumentMargin(self.document().documentMargin())
         doc.setDefaultFont(self.document().defaultFont())
         doc.setHtml(self.document().toHtml())
@@ -496,11 +497,12 @@ class TextBlkItem(QGraphicsTextItem):
         return self.textInteractionFlags() == Qt.TextInteractionFlag.TextEditorInteraction
 
     def isMultiFontSize(self) -> bool:
-        doc = QTextDocument()
-        doc.setHtml(self.document().toHtml())
+        doc = self.document()
         block = doc.firstBlock()
         if block.isValid():
             it = block.begin()
+            # if it.atEnd():
+            #     return False
             firstFontSize = it.fragment().charFormat().fontPointSize()
         else:
             return False
@@ -692,7 +694,10 @@ class TextBlkItem(QGraphicsTextItem):
 
     def setFontFamily(self, value: str, repaint_background: bool = True, set_selected: bool = False, restore_cursor: bool = False):
         cursor, after_kwargs = self._before_set_ffmt(set_selected, restore_cursor)
+        self.layout.relayout_on_changed = False
         self._doc_set_font_family(value, cursor)
+        self.layout.relayout_on_changed = True
+        self.layout.reLayoutEverything()
         self._after_set_ffmt(cursor, repaint_background, restore_cursor, **after_kwargs)
 
     def _doc_set_font_family(self, value: str, cursor: QTextCursor):
@@ -822,11 +827,11 @@ class TextBlkItem(QGraphicsTextItem):
             self.update()
 
     def setRelFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
-        doc = QTextDocument()
-        doc.setDocumentMargin(self.document().documentMargin())
-        doc.setDefaultFont(self.document().defaultFont())
-        doc.setHtml(self.document().toHtml())
-        doc.setDefaultTextOption(self.document().defaultTextOption())
+        self.is_formatting = True
+        self.block_change_signal = True
+        self.layout.relayout_on_changed = False
+        old_undo_steps = self.document().availableUndoSteps()
+        doc = self.document()
         cursor = QTextCursor(doc)
         block = doc.firstBlock()
         while block.isValid():
@@ -844,14 +849,17 @@ class TextBlkItem(QGraphicsTextItem):
                 cursor.mergeCharFormat(cfmt)
                 it += 1
             block = block.next()
-        self.setHtml(doc.toHtml())
-
-        br = self.absBoundingRect(qrect=True)
-        br_w, br_h = br.width(), br.height()
-        self.set_size(br_w * value, br_h * value, set_layout_maxsize=True, set_blk_size=True)
-        self.doc_size_changed.emit(self.idx)
-        self.repaint_background()
+        self.old_undo_steps = new_undo_steps = self.document().availableUndoSteps()
+        self.layout.relayout_on_changed = True
+        self.layout.reLayoutEverything()
         self.squeezeBoundingRect(True)
+        self.repaint_background()
+        new_steps = new_undo_steps - old_undo_steps
+        self.push_undo_stack.emit(new_steps, self.is_formatting)
+
+        self.is_formatting = False
+        self.block_change_signal = False        
+        
 
     def setFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
         '''

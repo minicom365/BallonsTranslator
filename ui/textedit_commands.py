@@ -273,14 +273,25 @@ class TextItemEditCommand(QUndoCommand):
         if self.op_counter == 0:
             self.op_counter += 1
             return
+        
+        self.blkitem.repaint_on_changed = False
         for _ in range(self.num_steps):
             self.blkitem.redo()
+        self.blkitem.repaint_on_changed = True
+        if self.num_steps > 0:
+            self.blkitem.repaint_background()
+
         if self.edit is not None and not self.is_formatting:
             self.edit.redo()
 
     def undo(self):
+        self.blkitem.repaint_on_changed = False
         for _ in range(self.num_steps):
             self.blkitem.undo()
+        self.blkitem.repaint_on_changed = True
+        if self.num_steps > 0:
+            self.blkitem.repaint_background()
+
         if self.edit is not None:
             self.edit.undo()
 
