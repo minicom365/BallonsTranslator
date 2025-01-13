@@ -4,42 +4,42 @@
 <context>
     <name>BottomBar</name>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="567"/>
+        <location filename="../ui/mainwindowbars.py" line="569"/>
         <source>translate page</source>
         <translation>이 페이지 번역</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="567"/>
+        <location filename="../ui/mainwindowbars.py" line="569"/>
         <source>stop</source>
         <translation>중지</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="567"/>
+        <location filename="../ui/mainwindowbars.py" line="569"/>
         <source>translate current page</source>
         <translation>현재 페이지를 번역</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="567"/>
+        <location filename="../ui/mainwindowbars.py" line="569"/>
         <source>stop translation</source>
         <translation>번역 중지</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="577"/>
+        <location filename="../ui/mainwindowbars.py" line="579"/>
         <source>Enable/disable paint mode</source>
         <translation>페인트 모드를 활성화/비활성화</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="581"/>
+        <location filename="../ui/mainwindowbars.py" line="583"/>
         <source>Enable/disable text edit mode</source>
         <translation>텍스트 편집 모드를 활성화/비활성화</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="587"/>
+        <location filename="../ui/mainwindowbars.py" line="589"/>
         <source>Original image opacity</source>
         <translation>원본 이미지 불투명도</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="591"/>
+        <location filename="../ui/mainwindowbars.py" line="593"/>
         <source>Text layer opacity</source>
         <translation>텍스트 레이어 불투명도</translation>
     </message>
@@ -592,7 +592,7 @@
 <context>
     <name>InpaintConfigPanel</name>
     <message>
-        <location filename="../ui/module_parse_widgets.py" line="367"/>
+        <location filename="../ui/module_parse_widgets.py" line="372"/>
         <source>Let the program decide whether it is necessary to use the selected inpaint method.</source>
         <translation>선택한 인페인트 방식 사용 여부를 프로그램이 결정</translation>
     </message>
@@ -760,17 +760,17 @@
         <translation type="obsolete">OCR의 키워드 치환</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="206"/>
+        <location filename="../ui/mainwindow.py" line="211"/>
         <source>Keyword substitution for machine translation</source>
         <translation>번역문에 대한 키워드 치환(후처리)</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="391"/>
+        <location filename="../ui/mainwindow.py" line="403"/>
         <source>Failed to load project </source>
         <translation>프로젝트를로드하지 못했습니다</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="410"/>
+        <location filename="../ui/mainwindow.py" line="422"/>
         <source>Failed to load project from</source>
         <translation>프로젝트를로드하지 못했습니다</translation>
     </message>
@@ -782,54 +782,54 @@
 </translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1046"/>
+        <location filename="../ui/mainwindow.py" line="1062"/>
         <source>unsaved</source>
         <translation>저장안됨</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1046"/>
+        <location filename="../ui/mainwindow.py" line="1062"/>
         <source>saved</source>
         <translation>저장</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1083"/>
+        <location filename="../ui/mainwindow.py" line="1099"/>
         <source>Saving image...</source>
         <translation>이미지 저장 ...</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1143"/>
+        <location filename="../ui/mainwindow.py" line="1159"/>
         <source>Import Text Styles</source>
         <translation>텍스트 스타일 가져오기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1157"/>
+        <location filename="../ui/mainwindow.py" line="1173"/>
         <source>Save Text Styles</source>
         <translation>텍스트 스타일 내보내기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1260"/>
+        <location filename="../ui/mainwindow.py" line="1276"/>
         <source>Export to </source>
         <translation>내보내기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="460"/>
+        <location filename="../ui/mainwindow.py" line="472"/>
         <source>Restart to apply changes? 
 </source>
         <translation>변경 사항을 적용하기 위해 다시 시작 하시겠습니까?
 </translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1153"/>
+        <location filename="../ui/mainwindow.py" line="1169"/>
         <source>Failed to load from {p}</source>
         <translation>불러오기에 실패하였습니다: {p}</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1174"/>
+        <location filename="../ui/mainwindow.py" line="1190"/>
         <source>Failed save to {savep}</source>
         <translation>저장에 실패하였습니다: {savep}</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1200"/>
+        <location filename="../ui/mainwindow.py" line="1216"/>
         <source>Text file exported to </source>
         <translation>텍스트 파일 저장됨: </translation>
     </message>
@@ -839,72 +839,77 @@
         <translation type="obsolete">텍스트 파일로 내보내기에 실패하였습니다.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="202"/>
+        <location filename="../ui/mainwindow.py" line="203"/>
         <source>Keyword substitution for source text</source>
-        <translation>원문에 대한 키워드 치환(전처리)</translation>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1096"/>
+        <location filename="../ui/mainwindow.py" line="1112"/>
         <source>Confirmation</source>
         <translation>확인</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1096"/>
+        <location filename="../ui/mainwindow.py" line="1112"/>
         <source>Are you sure to run image translation again?
 All existing translation results will be cleared!</source>
         <translation>이미지 번역을 다시 실행하시겠습니까?
 모든 기존 번역 결과가 지워집니다!</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1202"/>
+        <location filename="../ui/mainwindow.py" line="1218"/>
         <source>Failed to export as TEXT file</source>
         <translation>텍스트 파일을 내보내는 데 실패했습니다.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1208"/>
+        <location filename="../ui/mainwindow.py" line="1224"/>
         <source>Import *.md/*.txt</source>
         <translation>*.md/*.txt 불러오기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1220"/>
+        <location filename="../ui/mainwindow.py" line="1236"/>
         <source>Translation imported and matched successfully.</source>
         <translation>번역을 성공적으로 불러왔습니다.</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1222"/>
+        <location filename="../ui/mainwindow.py" line="1238"/>
         <source>Imported txt file not fully matched with current project, please make sure source txt file structured like results from &quot;export TXT/markdown&quot;</source>
         <translation>불러온 텍스트 파일이 현재 프로젝트와 전체 매칭 되지 않습니다, 소스 텍스트가 &quot;텍스트/마크다운 파일 내보내기&quot; 메뉴로 생성된 파일과 동일한 구조인지 확인하세요</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1224"/>
+        <location filename="../ui/mainwindow.py" line="1240"/>
         <source>Missing pages: </source>
         <translation>누락된 페이지: </translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1227"/>
+        <location filename="../ui/mainwindow.py" line="1243"/>
         <source>Unexpected pages: </source>
         <translation>예상치 못한 페이지: </translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1230"/>
+        <location filename="../ui/mainwindow.py" line="1246"/>
         <source>Unmatched pages: </source>
         <translation>불일치한 페이지: </translation>
     </message>
     <message>
-        <location filename="../ui/mainwindow.py" line="1236"/>
+        <location filename="../ui/mainwindow.py" line="1252"/>
         <source>Failed to import translation from </source>
         <translation>다음 파일에서 불러오기를 실패하였습니다: </translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindow.py" line="207"/>
+        <source>Keyword substitution for machine translation source text</source>
+        <translation>원문에 대한 키워드 치환(전처리)</translation>
     </message>
 </context>
 <context>
     <name>ModuleManager</name>
     <message>
-        <location filename="../ui/module_manager.py" line="870"/>
+        <location filename="../ui/module_manager.py" line="871"/>
         <source>Set Inpainter...</source>
         <translation>인페인터 설정 ...</translation>
     </message>
     <message>
-        <location filename="../ui/module_manager.py" line="920"/>
+        <location filename="../ui/module_manager.py" line="921"/>
         <source>Invalid</source>
         <translation>유효하지 않은</translation>
     </message>
@@ -917,7 +922,7 @@ All existing translation results will be cleared!</source>
         <translation type="obsolete">OCR 결과 키워드 치환</translation>
     </message>
     <message>
-        <location filename="../ui/module_parse_widgets.py" line="390"/>
+        <location filename="../ui/module_parse_widgets.py" line="395"/>
         <source>Delete and restore region where OCR return empty string.</source>
         <translation>OCR 결과가 없을 경우 원본 유지</translation>
     </message>
@@ -1280,7 +1285,7 @@ All existing translation results will be cleared!</source>
         <translation>글로벌 검색</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="340"/>
+        <location filename="../ui/mainwindowbars.py" line="342"/>
         <source>Keyword substitution for machine translation</source>
         <translation>번역문에 대한 키워드 치환(후처리)</translation>
     </message>
@@ -1290,22 +1295,22 @@ All existing translation results will be cleared!</source>
         <translation type="obsolete">OCR 결과 키워드 치환</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="353"/>
+        <location filename="../ui/mainwindowbars.py" line="355"/>
         <source>View</source>
         <translation>보기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="355"/>
+        <location filename="../ui/mainwindowbars.py" line="357"/>
         <source>Display Language</source>
         <translation>디스플레이 언어</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="369"/>
+        <location filename="../ui/mainwindowbars.py" line="371"/>
         <source>Drawing Board</source>
         <translation>그림판</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="371"/>
+        <location filename="../ui/mainwindowbars.py" line="373"/>
         <source>Text Editor</source>
         <translation>텍스트 편집기</translation>
     </message>
@@ -1315,73 +1320,78 @@ All existing translation results will be cleared!</source>
         <translation type="obsolete">텍스트 스타일 패널</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="373"/>
+        <location filename="../ui/mainwindowbars.py" line="375"/>
         <source>Import Text Styles</source>
         <translation>텍스트 스타일 가져오기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="374"/>
+        <location filename="../ui/mainwindowbars.py" line="376"/>
         <source>Export Text Styles</source>
         <translation>텍스트 스타일 내보내기</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="375"/>
+        <location filename="../ui/mainwindowbars.py" line="377"/>
         <source>Dark Mode</source>
         <translation>다크 모드</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="395"/>
+        <location filename="../ui/mainwindowbars.py" line="397"/>
         <source>Go</source>
         <translation>이동</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="396"/>
+        <location filename="../ui/mainwindowbars.py" line="398"/>
         <source>Previous Page</source>
         <translation>이전 페이지</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="398"/>
+        <location filename="../ui/mainwindowbars.py" line="400"/>
         <source>Next Page</source>
         <translation>다음 페이지</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="421"/>
+        <location filename="../ui/mainwindowbars.py" line="423"/>
         <source>Run</source>
         <translation>실행</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="411"/>
+        <location filename="../ui/mainwindowbars.py" line="413"/>
         <source>Enable Text Dection</source>
         <translation>텍스트 검출 활성화</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="412"/>
+        <location filename="../ui/mainwindowbars.py" line="414"/>
         <source>Enable OCR</source>
         <translation>OCR 활성화</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="413"/>
+        <location filename="../ui/mainwindowbars.py" line="415"/>
         <source>Enable Translation</source>
         <translation>번역 활성화</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="414"/>
+        <location filename="../ui/mainwindowbars.py" line="416"/>
         <source>Enable Inpainting</source>
         <translation>인페인팅 활성화</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="422"/>
+        <location filename="../ui/mainwindowbars.py" line="424"/>
         <source>Run without update textstyle</source>
         <translation>텍스트 스타일 업데이트 없이 실행</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="423"/>
+        <location filename="../ui/mainwindowbars.py" line="425"/>
         <source>Translate page</source>
         <translation>이 페이지 번역</translation>
     </message>
     <message>
-        <location filename="../ui/mainwindowbars.py" line="342"/>
+        <location filename="../ui/mainwindowbars.py" line="344"/>
         <source>Keyword substitution for source text</source>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindowbars.py" line="340"/>
+        <source>Keyword substitution for machine translation source text</source>
         <translation>원문에 대한 키워드 치환(전처리)</translation>
     </message>
 </context>
@@ -1406,6 +1416,52 @@ All existing translation results will be cleared!</source>
 <context>
     <name>TranslatorConfigPanel</name>
     <message>
+        <location filename="../ui/module_parse_widgets.py" line="328"/>
+        <source>Keyword substitution for machine translation</source>
+        <translation>번역문에 대한 키워드 치환(후처리)</translation>
+    </message>
+    <message>
+        <location filename="../ui/module_parse_widgets.py" line="338"/>
+        <source>Source</source>
+        <translation>원본</translation>
+    </message>
+    <message>
+        <location filename="../ui/module_parse_widgets.py" line="340"/>
+        <source>Target</source>
+        <translation>대상</translation>
+    </message>
+    <message>
+        <location filename="../ui/module_parse_widgets.py" line="331"/>
+        <source>Keyword substitution for source text</source>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
+    </message>
+    <message>
+        <location filename="../ui/module_parse_widgets.py" line="325"/>
+        <source>Keyword substitution for machine translation source text</source>
+        <translation>원문에 대한 키워드 치환(전처리)</translation>
+    </message>
+</context>
+<context>
+    <name>TranslatorStatusButton</name>
+    <message>
+        <location filename="../ui/mainwindowbars.py" line="68"/>
+        <source>Translator: </source>
+        <translation>번역기:</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindowbars.py" line="68"/>
+        <source>Source: </source>
+        <translation>원본:</translation>
+    </message>
+    <message>
+        <location filename="../ui/mainwindowbars.py" line="68"/>
+        <source> is required for </source>
+        <translation> 은(는) 다음을 위해 필요함: </translation>
+    </message>
+</context>
+<context>
+    <name>TranslatorConfigPanel</name>
+    <message>
         <location filename="../ui/module_parse_widgets.py" line="324"/>
         <source>Keyword substitution for machine translation</source>
         <translation>번역문에 대한 키워드 치환(후처리)</translation>
@@ -1423,7 +1479,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/module_parse_widgets.py" line="327"/>
         <source>Keyword substitution for source text</source>
-        <translation>원문에 대한 키워드 치환(전처리)</translation>
+        <translation>OCR 결과에 대한 키워드 치환</translation>
     </message>
 </context>
 <context>
