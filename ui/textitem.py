@@ -816,6 +816,7 @@ class TextBlkItem(QGraphicsTextItem):
             self.setFontSize(newvalue, repaint_background, True, restore_cursor, clip_size, **kwargs)
             cursor.clearSelection()
             self.squeezeBoundingRect()
+        cursor.setPosition(0)
 
     def setFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
         '''
