@@ -423,6 +423,7 @@ class SceneTextManager(QObject):
         else:
             self.txtblkShapeControl.setBlkItem(None)
             self.textpanel.hide()
+            self.textpanel.formatpanel.set_textblk_item()
             self.canvas.textLayer.hide()
 
     def adjustSceneTextRect(self):
