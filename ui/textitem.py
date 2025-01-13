@@ -494,7 +494,27 @@ class TextBlkItem(QGraphicsTextItem):
 
     def isEditing(self) -> bool:
         return self.textInteractionFlags() == Qt.TextInteractionFlag.TextEditorInteraction
-    
+
+    def isMultiFontSize(self) -> bool:
+        doc = QTextDocument()
+        doc.setHtml(self.document().toHtml())
+        block = doc.firstBlock()
+        if block.isValid():
+            it = block.begin()
+            firstFontSize = it.fragment().charFormat().fontPointSize()
+        else:
+            return False
+        while block.isValid():
+            it = block.begin()
+            while not it.atEnd():
+                fragment = it.fragment()
+                font_size = fragment.charFormat().fontPointSize()
+                if not firstFontSize == font_size:
+                    return True
+                it += 1
+            block = block.next()
+        return False
+
     def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         if not self.isEditing():
             self.startEdit(pos=event.pos())
@@ -802,21 +822,36 @@ class TextBlkItem(QGraphicsTextItem):
             self.update()
 
     def setRelFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
-        cursor = self.textCursor()
-        old_sizes = []
-        for i in range(len(self.toPlainText())):
-            cursor.setPosition(i)
-            cursor.setPosition(i+1, QTextCursor.MoveMode.KeepAnchor)
-            old_sizes.append(cursor.charFormat().fontPointSize())
-        for i in range(len(self.toPlainText())):
-            cursor.setPosition(i)
-            cursor.setPosition(i+1, QTextCursor.MoveMode.KeepAnchor)
-            self.setTextCursor(cursor)
-            newvalue = round(old_sizes[i] * value,2)
-            self.setFontSize(newvalue, repaint_background, True, restore_cursor, clip_size, **kwargs)
-            cursor.clearSelection()
-            self.squeezeBoundingRect()
-        cursor.setPosition(0)
+        doc = QTextDocument()
+        doc.setDocumentMargin(self.document().documentMargin())
+        doc.setDefaultFont(self.document().defaultFont())
+        doc.setHtml(self.document().toHtml())
+        doc.setDefaultTextOption(self.document().defaultTextOption())
+        cursor = QTextCursor(doc)
+        block = doc.firstBlock()
+        while block.isValid():
+            it = block.begin()
+            while not it.atEnd():
+                fragment = it.fragment()
+                old_font_size = fragment.charFormat().fontPointSize()
+                new_font_size = round(old_font_size * value,2)
+                cfmt = fragment.charFormat()
+                cfmt.setFontPointSize(new_font_size)
+                pos1 = fragment.position()
+                pos2 = pos1 + fragment.length()
+                cursor.setPosition(pos1)
+                cursor.setPosition(pos2, QTextCursor.MoveMode.KeepAnchor)
+                cursor.mergeCharFormat(cfmt)
+                it += 1
+            block = block.next()
+        self.setHtml(doc.toHtml())
+
+        br = self.absBoundingRect(qrect=True)
+        br_w, br_h = br.width(), br.height()
+        self.set_size(br_w * value, br_h * value, set_layout_maxsize=True, set_blk_size=True)
+        self.doc_size_changed.emit(self.idx)
+        self.repaint_background()
+        self.squeezeBoundingRect(True)
 
     def setFontSize(self, value: float, repaint_background: bool = False, set_selected: bool = False, restore_cursor: bool = False, clip_size: bool = False, **kwargs):
         '''
