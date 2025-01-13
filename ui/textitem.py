@@ -501,8 +501,7 @@ class TextBlkItem(QGraphicsTextItem):
         block = doc.firstBlock()
         if block.isValid():
             it = block.begin()
-            # if it.atEnd():
-            #     return False
+            # causes frozen for pyside==6.8.1
             firstFontSize = it.fragment().charFormat().fontPointSize()
         else:
             return False
@@ -850,9 +849,9 @@ class TextBlkItem(QGraphicsTextItem):
                 it += 1
             block = block.next()
         self.old_undo_steps = new_undo_steps = self.document().availableUndoSteps()
-        self.squeezeBoundingRect(True)
         self.layout.relayout_on_changed = True
         self.layout.reLayoutEverything()
+        self.squeezeBoundingRect(True, repaint=False)
         self.repaint_background()
         new_steps = new_undo_steps - old_undo_steps
         self.push_undo_stack.emit(new_steps, self.is_formatting)
@@ -951,6 +950,12 @@ class TextBlkItem(QGraphicsTextItem):
                 self.doc_size_changed.emit(self.idx)
             if repaint:
                 self.repaint_background()
+
+    def scene_scale_factor(self):
+        scale = 1
+        if hasattr(self.scene(), 'scale_factor'):
+            scale = self.scene().scale_factor
+        return scale
             
     def set_size(self, w: float, h: float, set_layout_maxsize=False, set_blk_size=True):
         '''
@@ -968,6 +973,7 @@ class TextBlkItem(QGraphicsTextItem):
         self._display_rect.setHeight(h)
         self.setCenterTransform()
         pos_shift = oc - self.sceneBoundingRect().center()
+        pos_shift = pos_shift / self.scene_scale_factor()
         
         align_c = align_tl = align_tr = False
         if self.fontformat.vertical:
