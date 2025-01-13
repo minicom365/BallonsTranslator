@@ -114,7 +114,7 @@
     <message>
         <location filename="../ui/canvas.py" line="779"/>
         <source>OCR, translate and inpaint</source>
-        <translation>OCR, 번역 및 입력</translation>
+        <translation>OCR, 번역 및 인페인트</translation>
     </message>
     <message>
         <location filename="../ui/canvas.py" line="780"/>
@@ -1456,43 +1456,7 @@ All existing translation results will be cleared!</source>
     <message>
         <location filename="../ui/mainwindowbars.py" line="68"/>
         <source> is required for </source>
-        <translation> 은(는) 다음을 위해 필요함: </translation>
-    </message>
-</context>
-<context>
-    <name>TranslatorConfigPanel</name>
-    <message>
-        <location filename="../ui/module_parse_widgets.py" line="324"/>
-        <source>Keyword substitution for machine translation</source>
-        <translation>번역문에 대한 키워드 치환(후처리)</translation>
-    </message>
-    <message>
-        <location filename="../ui/module_parse_widgets.py" line="334"/>
-        <source>Source</source>
-        <translation>원본</translation>
-    </message>
-    <message>
-        <location filename="../ui/module_parse_widgets.py" line="336"/>
-        <source>Target</source>
-        <translation>대상</translation>
-    </message>
-    <message>
-        <location filename="../ui/module_parse_widgets.py" line="327"/>
-        <source>Keyword substitution for source text</source>
-        <translation>OCR 결과에 대한 키워드 치환</translation>
-    </message>
-</context>
-<context>
-    <name>TranslatorStatusButton</name>
-    <message>
-        <location filename="../ui/mainwindowbars.py" line="68"/>
-        <source>Translator: </source>
-        <translation>번역기:</translation>
-    </message>
-    <message>
-        <location filename="../ui/mainwindowbars.py" line="68"/>
-        <source>Source: </source>
-        <translation>원본:</translation>
+        <translation type="obsolete"> 은(는) 다음을 위해 필요함: </translation>
     </message>
     <message>
         <location filename="../ui/mainwindowbars.py" line="68"/>
