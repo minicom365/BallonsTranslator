@@ -12,7 +12,7 @@ class MyClient(Client64):
                                        engine_type=engine_type,
                                        dat_path=dat_path)
 
-    def translate(self, src_text: "str | list"):
+    def translate(self, src_text: Union[str, list]):
         return self.request32('translate', src_text)
 
 
