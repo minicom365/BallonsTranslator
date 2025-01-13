@@ -26,6 +26,14 @@ class ezTransTranslator(BaseTranslator):
         'path_k2j(Optional)': r"C:\Program Files (x86)\ChangShinSoft\ezTrans XP\ehnd-kor.dll"
     }
 
+    # 전각-반각 매핑 테이블 생성
+    mapping = {i: i - 0xFEE0 for i in range(0xFF01, 0xFF5F)}
+    mapping[0x3000] = 0x0020  # 전각 공백 → 반각 공백
+
+    # 변환 함수
+    def fullwidth_to_halfwidth(self, text:str) -> str:
+        return text.translate(self.mapping)
+    
     def _setup_translator(self):
         self.lang_map['日本語'] = 'j'
         self.lang_map['한국어'] = 'k'
@@ -40,7 +48,8 @@ class ezTransTranslator(BaseTranslator):
 
         if source != target:
             engine: MyClient = getattr(self, f"{source}2{target}_engine")
-            return engine.translate(src_list)
+            translation = engine.translate(src_list)
+            return translation if not target == "k" else self.fullwidth_to_halfwidth(translation)
         else:
             return src_list
 
