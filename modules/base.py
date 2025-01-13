@@ -9,7 +9,7 @@ from utils.logger import logger as LOGGER
 from utils import shared
 
 
-GPUINTENSIVE_SET = {'cuda', 'xpu', 'mps'}
+GPUINTENSIVE_SET = {'cuda', 'mps', 'xpu', 'privateuseone'}
 
 def register_hooks(hooks_registered: OrderedDict, callbacks: Union[List, Callable, Dict]):
     if callbacks is None:
@@ -159,10 +159,18 @@ class BaseModule:
 
 os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import torch
+import torch_directml
 
 DEFAULT_DEVICE = 'cpu'
 if hasattr(torch, 'cuda') and torch.cuda.is_available():
     DEFAULT_DEVICE = 'cuda'
+elif hasattr(torch, 'privateuseone') and torch_directml.device_count() > 0:
+    from modules.dml import directml_init, directml_do_hijack
+    directml_init()
+    directml_do_hijack()
+    for d in range(torch.cuda.device_count()):
+        print(f"device {d}: {torch.cuda.get_device_name(d)}")
+    DEFAULT_DEVICE = 'cpu'
 elif hasattr(torch, 'xpu')  and torch.xpu.is_available():
     DEFAULT_DEVICE = 'xpu' if torch.xpu.is_available() else 'cpu'
 elif hasattr(torch, 'backends') and hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
@@ -183,7 +191,7 @@ def is_intel():
 
 def soft_empty_cache():
     gc.collect()
-    if DEFAULT_DEVICE == 'cuda':
+    if DEFAULT_DEVICE in ('cuda', 'privateuseone'):
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
     elif DEFAULT_DEVICE == 'xpu':
@@ -192,7 +200,22 @@ def soft_empty_cache():
     elif DEFAULT_DEVICE == 'mps':
         torch.mps.empty_cache()
 
-DEVICE_SELECTOR = lambda : deepcopy(
+
+def DEVICE_SELECTOR(): return deepcopy(
+    {
+        'type': 'selector',
+        'options': [
+            'cpu',
+            'cuda',
+            'mps',
+            'privateuseone'
+        ],
+        'value': DEFAULT_DEVICE
+    }
+)
+
+
+def DEVICE_SELECTOR_NO_DML(): return deepcopy(
     {
         'type': 'selector',
         'options': [
