@@ -175,6 +175,11 @@ def is_nvidia():
             return True
     return False
 
+def is_intel():
+    if DEFAULT_DEVICE == 'xpu':
+        if torch.version.xpu:
+            return True
+    return False
 
 def soft_empty_cache():
     gc.collect()
