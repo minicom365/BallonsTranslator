@@ -850,9 +850,9 @@ class TextBlkItem(QGraphicsTextItem):
                 it += 1
             block = block.next()
         self.old_undo_steps = new_undo_steps = self.document().availableUndoSteps()
+        self.squeezeBoundingRect(True)
         self.layout.relayout_on_changed = True
         self.layout.reLayoutEverything()
-        self.squeezeBoundingRect(True)
         self.repaint_background()
         new_steps = new_undo_steps - old_undo_steps
         self.push_undo_stack.emit(new_steps, self.is_formatting)
