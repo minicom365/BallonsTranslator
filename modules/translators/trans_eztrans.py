@@ -26,17 +26,17 @@ class ezTransTranslator(BaseTranslator):
         'path_k2j(Optional)': r"C:\Program Files (x86)\ChangShinSoft\ezTrans XP\ehnd-kor.dll"
     }
 
-    # 전각-반각 매핑 테이블 생성
-    mapping = {i: i - 0xFEE0 for i in range(0xFF01, 0xFF5F)}
-    mapping[0x3000] = 0x0020  # 전각 공백 → 반각 공백
-
     # 변환 함수
-    def fullwidth_to_halfwidth(self, text_list:list[str]) -> list[str]:
-        return [text.translate(self.mapping) for text in text_list]
+    def fullwidth_to_halfwidth(self, text_list:list[str], mapping:dict[int, int]) -> list[str]:
+        return [text.translate(mapping) for text in text_list]
     
     def _setup_translator(self):
         self.lang_map['日本語'] = 'j'
         self.lang_map['한국어'] = 'k'
+        
+        # 전각-반각 매핑 테이블 생성
+        self.mapping = {i: i - 0xFEE0 for i in range(0xFF01, 0xFF5F)}
+        self.mapping[0x3000] = 0x0020  # 전각 공백 → 반각 공백
 
         self.j2k_engine = MyClient(self.params['path_j2k'], "J2K", self.params['path_dat'])
         if os.path.exists(self.params['path_k2j(Optional)']):
@@ -49,7 +49,7 @@ class ezTransTranslator(BaseTranslator):
         if source != target:
             engine: MyClient = getattr(self, f"{source}2{target}_engine")
             translation = engine.translate(src_list)
-            return translation if not target == "k" else self.fullwidth_to_halfwidth(translation)
+            return translation if not target == "k" else self.fullwidth_to_halfwidth(translation, self.mapping)
         else:
             return src_list
 
