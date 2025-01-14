@@ -591,7 +591,7 @@ class FontFormatPanel(Widget):
                 self.textblk_item = None
                 self.set_active_format(self.global_format, multi_select)
                 if multi_select:
-                    self.textstyle_panel.setTitle('Grop')
+                    self.textstyle_panel.setTitle('Group')
                 else:
                     self.set_globalfmt_title()
             
@@ -601,15 +601,7 @@ class FontFormatPanel(Widget):
                 self.textblk_item = textblk_item
                 multi_size = False
                 if not textblk_item.isEditing():
-                    cursor = textblk_item.textCursor()
-                    cursor.setPosition(0)
-                    firstFontSize = cursor.charFormat().fontPointSize()
-                    for i in range(0,len(textblk_item.toPlainText())+1):
-                        cursor.setPosition(i)
-                        font_size = cursor.charFormat().fontPointSize()
-                        if not firstFontSize == font_size:
-                            multi_size = True
-                            break
+                    multi_size = textblk_item.isMultiFontSize()
                 self.set_active_format(blk_fmt,multi_size)
                 self.textstyle_panel.setTitle(f'TextBlock #{textblk_item.idx}')
 
