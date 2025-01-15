@@ -18,7 +18,7 @@ class MyClient(Client64):
 
 @register_translator('ezTrans')
 class ezTransTranslator(BaseTranslator):
-    concate_text = False
+    concate_text = True
 
     params: Dict = {
         'path_dat': r"C:\Program Files (x86)\ChangShinSoft\ezTrans XP\Dat",
