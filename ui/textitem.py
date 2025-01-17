@@ -515,6 +515,22 @@ class TextBlkItem(QGraphicsTextItem):
                 it += 1
             block = block.next()
         return False
+    
+    def minFontSize(self, to_px=True):
+        doc = self.document()
+        block = doc.firstBlock()
+        min_font_size = self.textCursor().charFormat().fontPointSize()
+        while block.isValid():
+            it = block.begin()
+            while not it.atEnd():
+                fragment = it.fragment()
+                font_size = fragment.charFormat().fontPointSize()
+                min_font_size = min(min_font_size, font_size)
+                it += 1
+            block = block.next()
+        if to_px:
+            min_font_size = pt2px(min_font_size)
+        return min_font_size
 
     def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         if not self.isEditing():
@@ -577,7 +593,10 @@ class TextBlkItem(QGraphicsTextItem):
         fontformat.frgb = [color.red(), color.green(), color.blue()]
         fontformat.font_weight = font.weight()
         fontformat.font_family = font.family()
-        fontformat.font_size = pt2px(font.pointSizeF())
+        if self.isEditing():
+            fontformat.font_size = pt2px(font.pointSizeF())
+        else:
+            fontformat.font_size = self.minFontSize()
         fontformat.bold = font.bold()
         fontformat.underline = font.underline()
         fontformat.italic = font.italic()

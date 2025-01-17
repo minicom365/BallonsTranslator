@@ -10,6 +10,7 @@ except:
 from .textitem import TextBlkItem, TextBlock
 from .textedit_area import TransTextEdit, SourceTextEdit
 from utils.fontformat import FontFormat
+import utils.config as C
 from .misc import doc_replace, doc_replace_no_shift
 from .texteditshapecontrol import TextBlkShapeControl
 from .page_search_widget import PageSearchWidget, Matched
@@ -261,13 +262,14 @@ class ResetAngleCommand(QUndoCommand):
                 self.ctrl.setAngle(angle)
 
 class TextItemEditCommand(QUndoCommand):
-    def __init__(self, blkitem: TextBlkItem, trans_edit: TransTextEdit, num_steps: int):
+    def __init__(self, blkitem: TextBlkItem, trans_edit: TransTextEdit, num_steps: int, formatpanel=None):
         super(TextItemEditCommand, self).__init__()
         self.op_counter = 0
         self.edit = trans_edit
         self.blkitem = blkitem
         self.num_steps = num_steps
         self.is_formatting = blkitem.is_formatting
+        self.formatpanel = formatpanel
 
     def redo(self):
         if self.op_counter == 0:
@@ -281,6 +283,10 @@ class TextItemEditCommand(QUndoCommand):
         if self.num_steps > 0:
             self.blkitem.repaint_background()
 
+        if self.is_formatting and self.blkitem == self.formatpanel.textblk_item:
+            multi_size = not self.blkitem.isEditing() and self.blkitem.isMultiFontSize()
+            self.formatpanel.set_active_format(self.blkitem.get_fontformat(), multi_size)
+
         if self.edit is not None and not self.is_formatting:
             self.edit.redo()
 
@@ -291,6 +297,10 @@ class TextItemEditCommand(QUndoCommand):
         self.blkitem.repaint_on_changed = True
         if self.num_steps > 0:
             self.blkitem.repaint_background()
+
+        if self.is_formatting and self.blkitem == self.formatpanel.textblk_item:
+            multi_size = not self.blkitem.isEditing() and self.blkitem.isMultiFontSize()
+            self.formatpanel.set_active_format(self.blkitem.get_fontformat(), multi_size)
 
         if self.edit is not None:
             self.edit.undo()

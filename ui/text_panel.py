@@ -599,10 +599,8 @@ class FontFormatPanel(Widget):
             if not self.restoring_textblk:
                 blk_fmt = textblk_item.get_fontformat()
                 self.textblk_item = textblk_item
-                multi_size = False
-                if not textblk_item.isEditing():
-                    multi_size = textblk_item.isMultiFontSize()
-                self.set_active_format(blk_fmt,multi_size)
+                multi_size = not textblk_item.isEditing() and textblk_item.isMultiFontSize()
+                self.set_active_format(blk_fmt, multi_size)
                 self.textstyle_panel.setTitle(f'TextBlock #{textblk_item.idx}')
 
     def on_effectbtn_clicked(self):
