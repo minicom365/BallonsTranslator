@@ -27,6 +27,7 @@ class ezTransTranslator(BaseTranslator):
     }
 
     def _setup_translator(self):
+        self.textblk_break = '\n'
         self.lang_map['日本語'] = 'j'
         self.lang_map['한국어'] = 'k'
 
