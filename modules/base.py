@@ -4,6 +4,8 @@ import time
 from typing import Dict, List, Callable, Union
 from copy import deepcopy
 from collections import OrderedDict
+import re
+import importlib
 
 from utils.logger import logger as LOGGER
 from utils import shared
@@ -90,7 +92,8 @@ class BaseModule:
                 try:
                     param_value = type(p)(param_value)
                 except ValueError:
-                    self.logger.warning(f'Invalid param value {param_value} for defined dtype: {type(p)}')
+                    self.logger.warning(f'Invalid param value {param_value} for defined dtype: {type(p)}, revert to original value {p}')
+                    param_value = p
             self.params[param_key] = param_value
 
     def updateParam(self, param_key: str, param_content):
@@ -124,6 +127,8 @@ class BaseModule:
                 if hasattr(self, k):
                     model = getattr(self, k)
                     if model is not None:
+                        if hasattr(model, 'unload_model'):
+                            model.unload_model(empty_cache=False)
                         del model
                         setattr(self, k, None)
                         model_deleted = True
@@ -155,10 +160,12 @@ class BaseModule:
     @property
     def debug_mode(self):
         return shared.DEBUG
+    
+    def flush(self, param_key: str):
+        return None
 
 os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import torch
-import torch_directml
 
 DEFAULT_DEVICE = 'cpu'
 AVAILABLE_DEVICES = ['cpu']
@@ -171,10 +178,16 @@ if hasattr(torch, 'xpu')  and torch.xpu.is_available():
 if hasattr(torch, 'backends') and hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
     DEFAULT_DEVICE = 'mps'
     AVAILABLE_DEVICES.append(DEFAULT_DEVICE)
-if hasattr(torch, 'privateuseone') and torch_directml.device_count() > 0:
-    torch.dml = torch_directml
-    DEFAULT_DEVICE = f'privateuseone:{torch.dml.default_device()}'
-    AVAILABLE_DEVICES += [f"privateuseone:{d}" for d in range(torch.dml.device_count())]
+
+try: 
+    import torch_directml
+    if hasattr(torch, 'privateuseone') and torch_directml.device_count() > 0:
+        torch.dml = torch_directml
+        DEFAULT_DEVICE = f'privateuseone:{torch.dml.default_device()}'
+        AVAILABLE_DEVICES += [f"privateuseone:{d}" for d in range(torch.dml.device_count())]
+except:
+    # directml is not supported
+    pass
 BF16_SUPPORTED = DEFAULT_DEVICE == 'cuda' and torch.cuda.is_bf16_supported() or DEFAULT_DEVICE == 'xpu' and torch.xpu.is_bf16_supported()
 
 def is_nvidia():
@@ -215,3 +228,25 @@ TORCH_DTYPE_MAP = {
     'bf16': torch.bfloat16,
 }
     
+def load_modules():
+    def _load_module(module_dir: str, module_pattern: str):
+        modules = os.listdir(module_dir)
+        pattern = re.compile(module_pattern)
+        module_path = module_dir.replace('/', '.')
+        if not module_path.endswith('.'):
+            module_path += '.'
+        for module_name in modules:
+            if pattern.match(module_name) is not None:
+                try:
+                    module = module_path + module_name.replace('.py', '')
+                    importlib.import_module(module)
+                except Exception as e:
+                    LOGGER.warning(f'Failed to import {module}: {e}')
+
+    for kwargs in [
+        {'module_dir': 'modules/translators', 'module_pattern': r'trans_(.*?).py'},
+        {'module_dir': 'modules/textdetector', 'module_pattern': r'detector_(.*?).py'},
+        {'module_dir': 'modules/inpaint', 'module_pattern': r'inpaint_(.*?).py'},
+        {'module_dir': 'modules/ocr', 'module_pattern': r'ocr_(.*?).py'},
+    ]:
+        _load_module(**kwargs)

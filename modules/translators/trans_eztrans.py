@@ -18,7 +18,7 @@ class MyClient(Client64):
 
 @register_translator('ezTrans')
 class ezTransTranslator(BaseTranslator):
-    concate_text = False
+    concate_text = True
 
     params: Dict = {
         'path_dat': r"C:\Program Files (x86)\ChangShinSoft\ezTrans XP\Dat",
@@ -31,6 +31,7 @@ class ezTransTranslator(BaseTranslator):
         return [text.translate(mapping) for text in text_list]
     
     def _setup_translator(self):
+        self.textblk_break = '\n'
         self.lang_map['日本語'] = 'j'
         self.lang_map['한국어'] = 'k'
         

@@ -10,41 +10,29 @@ except:
 from .textitem import TextBlkItem, TextBlock
 from .textedit_area import TransTextEdit, SourceTextEdit
 from utils.fontformat import FontFormat
+import utils.config as C
 from .misc import doc_replace, doc_replace_no_shift
 from .texteditshapecontrol import TextBlkShapeControl
 from .page_search_widget import PageSearchWidget, Matched
-from .config_proj import ProjImgTrans
+from utils.proj_imgtrans import ProjImgTrans
 from .scene_textlayout import PUNSET_HALF
 
 
-def propagate_user_edit(src_edit: Union[TransTextEdit, TextBlkItem], target_edit: Union[TransTextEdit, TextBlkItem], pos: int, added_text: str, input_method_used: bool):
-
+def propagate_user_edit(src_edit: Union[TransTextEdit, TextBlkItem], target_edit: Union[TransTextEdit, TextBlkItem], pos: int, added_text: str, joint_previous: bool = False):
     ori_count = target_edit.document().characterCount()
     new_count = src_edit.document().characterCount()
     removed = ori_count + len(added_text) - new_count
 
-    new_editblock = False
-    if input_method_used or added_text not in PUNSET_HALF:
-        new_editblock = True
-
     cursor = target_edit.textCursor()
-    if len(added_text) > 0:
-        cursor.setPosition(pos)
-        if removed > 0:
-            cursor.setPosition(pos + removed, QTextCursor.MoveMode.KeepAnchor)
-        if new_editblock:
-            cursor.beginEditBlock()
-        cursor.insertText(added_text)
-        if new_editblock:
-            cursor.endEditBlock()
-    elif removed > 0:
-        if removed == 1:
-            cursor.setPosition(pos + removed - 1)
-            cursor.deleteChar()
-        else:
-            cursor.setPosition(pos)
-            cursor.setPosition(pos + removed, QTextCursor.MoveMode.KeepAnchor)
-            cursor.removeSelectedText()
+    cursor.setPosition(pos)
+    if joint_previous:
+        cursor.joinPreviousEditBlock()
+    else:
+        cursor.beginEditBlock()
+    if removed > 0:
+        cursor.setPosition(pos + removed, QTextCursor.MoveMode.KeepAnchor)
+    cursor.insertText(added_text)
+    cursor.endEditBlock()
     target_edit.old_undo_steps = target_edit.document().availableUndoSteps()
 
 
@@ -104,26 +92,6 @@ class ApplyFontformatCommand(QUndoCommand):
             item.set_fontformat(fmt)
             item.setRect(rect)
             edit.document().clearUndoRedoStacks()
-
-
-class ApplyEffectCommand(QUndoCommand):
-    def __init__(self, items: List[TextBlkItem], fontformat: FontFormat):
-        super(ApplyEffectCommand, self).__init__()
-        self.items = items
-        self.old_fmt_lst: List[FontFormat] = []
-        self.new_fmt = fontformat
-        for item in items:
-            self.old_fmt_lst.append(item.get_fontformat())
-
-    def redo(self):
-        for item in self.items:
-            item.update_effect(self.new_fmt)
-            item.update()
-
-    def undo(self):
-        for item, fmt in zip(self.items, self.old_fmt_lst):
-            item.update_effect(fmt)
-            item.update()
 
     
 class ReshapeItemCommand(QUndoCommand):
@@ -261,13 +229,20 @@ class ResetAngleCommand(QUndoCommand):
                 self.ctrl.setAngle(angle)
 
 class TextItemEditCommand(QUndoCommand):
-    def __init__(self, blkitem: TextBlkItem, trans_edit: TransTextEdit, num_steps: int):
+    def __init__(self, blkitem: TextBlkItem, trans_edit: TransTextEdit, num_steps: int, formatpanel=None):
         super(TextItemEditCommand, self).__init__()
         self.op_counter = 0
         self.edit = trans_edit
         self.blkitem = blkitem
         self.num_steps = num_steps
         self.is_formatting = blkitem.is_formatting
+        self.old_ffmt_values = self.new_ffmt_values = None
+        if blkitem.is_formatting and blkitem.old_ffmt_values is not None:
+            self.old_ffmt_values = blkitem.old_ffmt_values.copy()
+            self.new_ffmt_values = self.old_ffmt_values.copy()
+            for k in self.new_ffmt_values:
+                self.new_ffmt_values[k] = getattr(blkitem.fontformat, k)
+        self.formatpanel = formatpanel
 
     def redo(self):
         if self.op_counter == 0:
@@ -275,22 +250,34 @@ class TextItemEditCommand(QUndoCommand):
             return
         
         self.blkitem.repaint_on_changed = False
-        for _ in range(self.num_steps):
-            self.blkitem.redo()
+        if self.new_ffmt_values is not None:
+            for k, v in self.new_ffmt_values.items():
+                self.blkitem.fontformat[k] = v
+        self.blkitem.redo()
         self.blkitem.repaint_on_changed = True
         if self.num_steps > 0:
             self.blkitem.repaint_background()
+
+        if self.is_formatting and self.blkitem == self.formatpanel.textblk_item:
+            multi_size = not self.blkitem.isEditing() and self.blkitem.isMultiFontSize()
+            self.formatpanel.set_active_format(self.blkitem.get_fontformat(), multi_size)
 
         if self.edit is not None and not self.is_formatting:
             self.edit.redo()
 
     def undo(self):
         self.blkitem.repaint_on_changed = False
-        for _ in range(self.num_steps):
-            self.blkitem.undo()
+        if self.old_ffmt_values is not None:
+            for k, v in self.old_ffmt_values.items():
+                self.blkitem.fontformat[k] = v
+        self.blkitem.undo()
         self.blkitem.repaint_on_changed = True
         if self.num_steps > 0:
             self.blkitem.repaint_background()
+
+        if self.is_formatting and self.blkitem == self.formatpanel.textblk_item:
+            multi_size = not self.blkitem.isEditing() and self.blkitem.isMultiFontSize()
+            self.formatpanel.set_active_format(self.blkitem.get_fontformat(), multi_size)
 
         if self.edit is not None:
             self.edit.undo()
@@ -309,15 +296,12 @@ class TextEditCommand(QUndoCommand):
         if self.op_counter == 0:
             self.op_counter += 1
             return
-
-        for _ in range(self.num_steps):
-            self.edit.redo()
+        self.edit.redo()
         if self.blkitem is not None:
             self.blkitem.redo()
 
     def undo(self):
-        for _ in range(self.num_steps):
-            self.edit.undo()
+        self.edit.undo()
         if self.blkitem is not None:
             self.blkitem.undo()
 

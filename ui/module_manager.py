@@ -1,8 +1,10 @@
 import time
 from typing import Union, List, Dict, Callable
+import os.path as osp
 
 import numpy as np
 from qtpy.QtCore import QThread, Signal, QObject, QLocale, QTimer
+from qtpy.QtWidgets import QFileDialog
 
 from .funcmaps import get_maskseg_method
 from utils.logger import logger as LOGGER
@@ -16,12 +18,12 @@ from modules import INPAINTERS, TRANSLATORS, TEXTDETECTORS, OCR, \
     BaseTranslator, InpainterBase, TextDetectorBase, OCRBase
 import modules
 modules.translators.SYSTEM_LANG = QLocale.system().name()
-from modules.textdetector import TextBlock
+from utils.textblock import TextBlock, sort_regions
 from utils import shared
 from utils import create_error_dialog, create_info_dialog, connect_once
-from .custom_widget import ImgtransProgressMessageBox
+from .custom_widget import ImgtransProgressMessageBox, ParamComboBox
 from .configpanel import ConfigPanel
-from .config_proj import ProjImgTrans
+from utils.proj_imgtrans import ProjImgTrans
 from utils.config import pcfg
 cfg_module = pcfg.module
 
@@ -282,7 +284,6 @@ class ImgtransThread(QThread):
         self.inpaint_thread = inpaint_thread
         self.job = None
         self.imgtrans_proj: ProjImgTrans = None
-        self.mask_postprocess = None
 
     @property
     def textdetector(self) -> TextDetectorBase:
@@ -362,15 +363,20 @@ class ImgtransThread(QThread):
             blk_removed: List[TextBlock] = []
             if cfg_module.enable_detect:
                 try:
-                    mask, blk_list = self.textdetector.detect(img)
-                    if self.mask_postprocess is not None:
-                        mask = self.mask_postprocess(mask)
+                    mask, blk_list = self.textdetector.detect(img, self.imgtrans_proj)
                     need_save_mask = True
                 except Exception as e:
                     create_error_dialog(e, self.tr('Text Detection Failed.'), 'TextDetectFailed')
                     blk_list = []
                 self.detect_counter += 1
                 self.update_detect_progress.emit(self.detect_counter)
+                if pcfg.module.keep_exist_textlines:
+                    blk_list = self.imgtrans_proj.pages[imgname] + blk_list
+                    blk_list = sort_regions(blk_list)
+                    existed_mask = self.imgtrans_proj.load_mask_by_imgname(imgname)
+                    if existed_mask is not None:
+                        mask = np.bitwise_or(mask, existed_mask)
+                    print(len(blk_list), len(self.imgtrans_proj.pages[imgname]))
                 self.imgtrans_proj.pages[imgname] = blk_list
 
             if blk_list is None:
@@ -518,40 +524,35 @@ def merge_config_module_params(config_params: Dict, module_keys: List, get_modul
 
             for mk in module_key_set:
                 if mk not in cfg_key_set:
-                    LOGGER.info(f'Found new {module_key} config: {mk}')
+                    # LOGGER.info(f'Found new {module_key} config: {mk}')
                     cfg_param[mk] = module_params[mk]
                 else:
                     mparam = module_params[mk]
                     cparam = cfg_param[mk]
                     if isinstance(mparam, dict):
-                        if 'type' in mparam and mparam['type'] == 'selector' \
-                            and cfg_param[mk]['options'] != mparam['options']:
-                            LOGGER.info(f'Update {mk} options')
-                            cfg_param[mk]['options'] = mparam['options']
-                        if 'type' in mparam and mparam['type'] != cparam['type']:
-                            cparam['type'] = mparam['type']
-                        for k in mparam:
-                            if k not in cparam:
-                                cparam[k] = mparam[k]
-                        deprecated_val_keys = {'select', 'content'}
-                        for k in list(cparam.keys()):
-                            if k in deprecated_val_keys:
-                                val = cparam.pop(k)
-                                if cparam['type'] == 'checkbox' and isinstance(val, str):
-                                    val = val.lower().strip() == 'true'
-                                cparam['value'] = val
-                                continue
-                            if k not in mparam:
-                                cparam.pop(k)
-                        if type(cparam['value']) != type(mparam['value']):
+                        tgt_type = type(mparam['value'])
+                        if isinstance(cparam, dict):
+                            if 'value' in cparam:
+                                v = cparam['value']
+                            elif isinstance(mparam['value'], dict):
+                                for k in mparam['value']:
+                                    if k in cparam:
+                                        mparam['value'][k] = cparam[k]
+                                v = mparam['value']
+                            else:
+                                v = mparam['value']
+                        else:
+                            v = cparam
+                        valid = True
+                        if tgt_type != type(v):
                             try:
-                                cparam['value'] = type(mparam['value'])(cparam['value'])
+                                v = tgt_type(v)
                             except:
-                                dtype = type(mparam['value'])
-                                mv = mparam['value']
-                                cv = cparam['value']
-                                LOGGER.warning(f'Invalid param value {cv} for defined dtype: {dtype}, it will be set to default value: {mv}')
-                                cparam['value'] = mv
+                                valid = False
+                                LOGGER.warning(f'Invalid param value {v} for defined dtype: {tgt_type}, it will be set to default value: {mparam}')
+                        if valid:
+                            mparam['value'] = v
+                        cfg_param[mk] = mparam
                     else:
                         if type(cparam) != type(mparam):
                             if not isinstance(mparam, dict) and isinstance(cparam, dict):
@@ -574,7 +575,6 @@ def merge_config_module_params(config_params: Dict, module_keys: List, get_modul
 
 
 def unload_modules(self, module_names):
-    import torch
     model_deleted = False
     for module in module_names:
         module: BaseModule = getattr(self, module)
@@ -586,8 +586,6 @@ def unload_modules(self, module_names):
 class ModuleManager(QObject):
     imgtrans_proj: ProjImgTrans = None
 
-    update_translator_status = Signal(str, str, str)
-    update_inpainter_status = Signal(str)
     finish_translate_page = Signal(str)
     canvas_inpaint_finished = Signal(dict)
     inpaint_th_finished = Signal()
@@ -610,18 +608,14 @@ class ModuleManager(QObject):
 
     def setupThread(self, config_panel: ConfigPanel, imgtrans_progress_msgbox: ImgtransProgressMessageBox, ocr_postprocess: Callable = None, translate_preprocess: Callable = None, translate_postprocess: Callable = None):
         self.textdetect_thread = TextDetectThread()
-        self.textdetect_thread.finish_set_module.connect(self.on_finish_setdetector)
 
         self.ocr_thread = OCRThread()
-        self.ocr_thread.finish_set_module.connect(self.on_finish_setocr)
-
+        
         self.translate_thread = TranslateThread()
         self.translate_thread.progress_changed.connect(self.on_update_translate_progress)
-        self.translate_thread.finish_set_module.connect(self.on_finish_settranslator)
         self.translate_thread.finish_translate_page.connect(self.on_finish_translate_page)  
 
         self.inpaint_thread = InpaintThread()
-        self.inpaint_thread.finish_set_module.connect(self.on_finish_setinpainter)
         self.inpaint_thread.finish_inpaint.connect(self.on_finish_inpaint)
 
         self.progress_msgbox = imgtrans_progress_msgbox
@@ -638,8 +632,6 @@ class ModuleManager(QObject):
         translator_params = merge_config_module_params(cfg_module.translator_params, GET_VALID_TRANSLATORS(), TRANSLATORS.get)
         translator_panel.addModulesParamWidgets(translator_params)
         translator_panel.translator_changed.connect(self.setTranslator)
-        translator_panel.source_combobox.currentTextChanged.connect(self.on_translatorsource_changed)
-        translator_panel.target_combobox.currentTextChanged.connect(self.on_translatortarget_changed)
         translator_panel.paramwidget_edited.connect(self.on_translatorparam_edited)
         from modules.translators.hooks import chs2cht
         BaseTranslator.register_preprocess_hooks({'keyword_sub': translate_preprocess})
@@ -668,10 +660,6 @@ class ModuleManager(QObject):
 
         config_panel.unload_models.connect(self.unload_all_models)
 
-        self.setTextDetector()
-        self.setOCR()
-        self.setTranslator()
-        self.setInpainter()
 
     def unload_all_models(self):
         unload_modules(self, {'textdetector', 'inpainter', 'ocr', 'translator'})
@@ -855,7 +843,6 @@ class ModuleManager(QObject):
         if self.translate_thread.isRunning():
             LOGGER.warning('Terminating a running translation thread.')
             self.translate_thread.terminate()
-        self.update_translator_status.emit('...', cfg_module.translate_source, cfg_module.translate_target)
         self.translate_thread.setTranslator(translator)
 
     def setInpainter(self, inpainter: str = None):
@@ -890,36 +877,6 @@ class ModuleManager(QObject):
             self.ocr_thread.terminate()
         self.ocr_thread.setOCR(ocr)
 
-    def on_finish_setdetector(self):
-        if self.textdetector is not None:
-            cfg_module.textdetector = self.textdetector.name
-            self.textdetect_panel.setDetector(self.textdetector.name)
-            LOGGER.info('Text detector set to {}'.format(self.textdetector.name))
-
-    def on_finish_setocr(self):
-        if self.ocr is not None:
-            cfg_module.ocr = self.ocr.name
-            self.ocr_panel.setOCR(self.ocr.name)
-            LOGGER.info('OCR set to {}'.format(self.ocr.name))
-
-    def on_finish_setinpainter(self):
-        if self.inpainter is not None:
-            cfg_module.inpainter = self.inpainter.name
-            self.inpaint_panel.setInpainter(self.inpainter.name)
-            self.update_inpainter_status.emit(cfg_module.inpainter)
-            LOGGER.info('Inpainter set to {}'.format(self.inpainter.name))
-
-    def on_finish_settranslator(self):
-        translator = self.translator
-        if translator is not None:
-            cfg_module.translator = translator.name
-            self.update_translator_status.emit(cfg_module.translator, cfg_module.translate_source, cfg_module.translate_target)
-            self.translator_panel.finishSetTranslator(translator)
-            LOGGER.info('Translator set to {}'.format(self.translator.name))
-        else:
-            LOGGER.error('invalid translator')
-            self.update_translator_status.emit(self.tr('Invalid'), '', '')
-        
     def on_finish_translate_page(self, page_key: str):
         self.finish_translate_page.emit(page_key)
     
@@ -931,20 +888,6 @@ class ModuleManager(QObject):
     def canvas_inpaint(self, inpaint_dict):
         self.run_canvas_inpaint = True
         self.inpaint(**inpaint_dict)
-
-    def on_translatorsource_changed(self):
-        text = self.translator_panel.source_combobox.currentText()
-        if self.translator is not None:
-            self.translator.set_source(text)
-        cfg_module.translate_source = text
-        self.update_translator_status.emit(cfg_module.translator, cfg_module.translate_source, cfg_module.translate_target)
-
-    def on_translatortarget_changed(self):
-        text = self.translator_panel.target_combobox.currentText()
-        if self.translator is not None:
-            self.translator.set_target(text)
-        cfg_module.translate_target = text
-        self.update_translator_status.emit(cfg_module.translator, cfg_module.translate_source, cfg_module.translate_target)
     
     def on_translatorparam_edited(self, param_key: str, param_content: dict):
         if self.translator is not None:
@@ -969,8 +912,24 @@ class ModuleManager(QObject):
     def updateModuleSetupParam(self, 
                                module: Union[InpainterBase, BaseTranslator],
                                param_key: str, param_content: dict):
-            param_content = param_content['content']
-            module.updateParam(param_key, param_content)
+            
+        if param_content.get('flush', False):
+            param_widget: ParamComboBox = param_content['widget']
+            param_widget.blockSignals(True)
+            current_item = param_widget.currentText()
+            param_widget.clear()
+            param_widget.addItems(module.flush(param_key))
+            param_widget.setCurrentText(current_item)
+            param_widget.blockSignals(False)
+        elif param_content.get('select_path', False):
+            dialog = QFileDialog()
+            f = module.params[param_key].get('path_filter', None)
+            p = dialog.getOpenFileUrl(self.parent(), filter=f)[0].toLocalFile()
+            if osp.exists(p):
+                param_widget: ParamComboBox = param_content['widget']
+                param_widget.setCurrentText(p)
+        else:
+            module.updateParam(param_key, param_content['content'])
 
     def handle_page_changed(self):
         if not self.imgtrans_thread.isRunning():

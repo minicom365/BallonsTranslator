@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Callable
 
 from qtpy.QtWidgets import QComboBox, QWidget
 from qtpy.QtCore import Signal, Qt
 from qtpy.QtGui import QDoubleValidator
 
 from utils.shared import CONFIG_COMBOBOX_LONG, CONFIG_COMBOBOX_MIDEAN, CONFIG_COMBOBOX_SHORT, CONFIG_COMBOBOX_HEIGHT
-
+from .push_button import NoBorderPushBtn
 
 
 class ComboBox(QComboBox):
@@ -60,7 +60,9 @@ class ConfigComboBox(ComboBox):
 
 class ParamComboBox(ComboBox):
     paramwidget_edited = Signal(str, str)
-    def __init__(self, param_key: str, options: List[str], size=CONFIG_COMBOBOX_SHORT, scrollWidget: QWidget = None, *args, **kwargs) -> None:
+    flushbtn_clicked = Signal()
+    pathbtn_clicked = Signal()
+    def __init__(self, param_key: str, options: List[str], size=CONFIG_COMBOBOX_SHORT, scrollWidget: QWidget = None, flush_btn: bool = False, path_selector: bool = False, *args, **kwargs) -> None:
         super().__init__(scrollWidget=scrollWidget, *args, **kwargs)
         self.param_key = param_key
         self.setFixedWidth(size)
@@ -68,6 +70,13 @@ class ParamComboBox(ComboBox):
         options = [str(opt) for opt in options]
         self.addItems(options)
         self.currentTextChanged.connect(self.on_select_changed)
+        
+        if flush_btn:
+            self.flush_btn = NoBorderPushBtn(self.tr('Flush'))
+            self.flush_btn.clicked.connect(self.flushbtn_clicked)
+        if path_selector:
+            self.path_select_btn = NoBorderPushBtn(self.tr('Select Path'))
+            self.path_select_btn.clicked.connect(self.pathbtn_clicked)
 
     def on_select_changed(self):
         self.paramwidget_edited.emit(self.param_key, self.currentText())
@@ -76,7 +85,7 @@ class ParamComboBox(ComboBox):
 class SizeComboBox(QComboBox):
     
     param_changed = Signal(str, float)
-    def __init__(self, val_range: List = None, param_name: str = '', *args, **kwargs) -> None:
+    def __init__(self, val_range: List = None, param_name: str = '', parent=None, init_value=None, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.param_name = param_name
         self.editTextChanged.connect(self.on_text_changed)
@@ -92,6 +101,8 @@ class SizeComboBox(QComboBox):
 
         self.setValidator(validator)
         self._value = 0
+        if init_value is not None:
+            self.setValue(init_value)
 
     def on_text_changed(self):
         if self.hasFocus():
@@ -113,3 +124,12 @@ class SizeComboBox(QComboBox):
     def setValue(self, value: float):
         value = min(self.max_val, max(self.min_val, value))
         self.setCurrentText(str(round(value, 2)))
+
+    def changeByDelta(self, delta: float, multiplier = 0.01):
+        if isinstance(multiplier, Callable):
+            multiplier = multiplier()
+        self.setValue(self.value() + delta * multiplier)
+
+
+class SmallSizeComboBox(SizeComboBox):
+    pass

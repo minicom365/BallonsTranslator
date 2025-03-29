@@ -9,7 +9,6 @@ urllib3; sys_platform == 'win32' # https://github.com/psf/requests/issues/5740
 urllib3; sys_platform == 'darwin' # fix urllib3.package.six.move module not found error
 jaconv
 torch
-torch-directml
 torchvision
 transformers
 mecab-python3; sys_platform == 'darwin'
@@ -35,7 +34,7 @@ keyboard
 ordered-set
 opencc-python-reimplemented
 requests
-Pillow>=10.0.1
+ultralytics==8.3.90
 beautifulsoup4
 colorama
 openai>=1.59.5
@@ -45,7 +44,7 @@ py7zr
 multivolumefile
 httpx[socks,brotli]
 langdetect
-translators
+translators==5.9.5
 json5
 pywin32; sys_platform == 'win32'
 winsdk; sys_platform == 'win32'
